@@ -16,7 +16,7 @@ public class Queue implements ProductAcceptor {
     /**
      * Requests from machine that will be handling the products
      */
-    private ArrayList<Machine> requests;
+    private ArrayList<Agent> requests;
 
     /**
      * Initializes the queue and introduces a dummy machine
@@ -31,17 +31,17 @@ public class Queue implements ProductAcceptor {
      * Asks a queue to give a product to a machine
      * True is returned if a product could be delivered; false if the request is queued
      */
-    public boolean askProduct(Machine machine) {
+    public boolean askProduct(Agent agent) {
         // This is only possible with a non-empty queue
         if (row.size() > 0) {
             // If the machine accepts the product
-            if (machine.giveProduct(row.get(0))) {
+            if (agent.giveProduct(row.get(0))) {
                 row.remove(0);// Remove it from the queue
                 return true;
             } else
                 return false; // Machine rejected; don't queue request
         } else {
-            requests.add(machine);
+            requests.add(agent);
             return false; // queue request
         }
     }

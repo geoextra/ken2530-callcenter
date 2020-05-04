@@ -6,7 +6,7 @@ package callcenter;
  * @author Joel Karel
  * @version %I%, %G%
  */
-public class Machine implements CProcess, ProductAcceptor {
+public class Agent implements CProcess, ProductAcceptor {
     /**
      * Eventlist that will manage events
      */
@@ -44,23 +44,30 @@ public class Machine implements CProcess, ProductAcceptor {
      */
     private int procCnt;
 
+    public boolean isCorporate() {
+        return corporate;
+    }
+
+    private boolean corporate;
+
 
     /**
      * Constructor
      * Service times are exponentially distributed with mean 30
-     *
-     * @param q Queue from which the machine has to take products
+     *  @param q Queue from which the machine has to take products
      * @param s Where to send the completed products
      * @param e Eventlist that will manage events
      * @param n The name of the machine
+     * @param corporate
      */
-    public Machine(Queue q, ProductAcceptor s, CEventList e, String n) {
+    public Agent(Queue q, ProductAcceptor s, CEventList e, String n, boolean c) {
         status = 'i';
         queue = q;
         sink = s;
         eventlist = e;
         name = n;
         meanProcTime = 30;
+        corporate = c;
         queue.askProduct(this);
     }
 
@@ -74,7 +81,7 @@ public class Machine implements CProcess, ProductAcceptor {
      * @param n The name of the machine
      * @param m Mean processing time
      */
-    public Machine(Queue q, ProductAcceptor s, CEventList e, String n, double m) {
+    public Agent(Queue q, ProductAcceptor s, CEventList e, String n, double m) {
         status = 'i';
         queue = q;
         sink = s;
@@ -94,7 +101,7 @@ public class Machine implements CProcess, ProductAcceptor {
      * @param n  The name of the machine
      * @param st service times
      */
-    public Machine(Queue q, ProductAcceptor s, CEventList e, String n, double[] st) {
+    public Agent(Queue q, ProductAcceptor s, CEventList e, String n, double[] st) {
         status = 'i';
         queue = q;
         sink = s;
@@ -118,13 +125,13 @@ public class Machine implements CProcess, ProductAcceptor {
      * Method to have this object execute an event
      *
      * @param type The type of the event that has to be executed
-     * @param time  The current time
+     * @param tme  The current time
      */
-    public void execute(int type, double time) {
+    public void execute(int type, double tme) {
         // show arrival
-        System.out.println("Product finished at time = " + time);
+        System.out.println("Product finished at time = " + tme);
         // Remove product from system
-        customer.stamp(time, "Production complete", name);
+        customer.stamp(tme, "Production complete", name);
         sink.giveProduct(customer);
         customer = null;
         // set machine status to idle
