@@ -9,7 +9,7 @@ import java.util.Random;
  * @version %I%, %G%
  */
 public class Agent implements CProcess, ProductAcceptor {
-    private static Random randomGenerator = new Random();
+    private static final Random randomGenerator = new Random();
 
     /**
      * Eventlist that will manage events
@@ -26,11 +26,11 @@ public class Agent implements CProcess, ProductAcceptor {
     /**
      * Queue from which the machine has to take products
      */
-    private Queue queue;
+    private final Queue queue;
     /**
      * Sink to dump products
      */
-    private ProductAcceptor sink;
+    private final ProductAcceptor sink;
     /**
      * Status of the machine (b=busy, i=idle)
      */
@@ -38,12 +38,12 @@ public class Agent implements CProcess, ProductAcceptor {
     /**
      * Mean processing time
      */
-    private double consumerMeanProcTime;
-    private double consumerDerivProcTime;
-    private double consumerMinProcTime;
-    private double corporateMeanProcTime;
-    private double corporateDerivProcTime;
-    private double corporateMinProcTime;
+    private final double consumerMeanProcTime;
+    private final double consumerDerivProcTime;
+    private final double consumerMinProcTime;
+    private final double corporateMeanProcTime;
+    private final double corporateDerivProcTime;
+    private final double corporateMinProcTime;
     /**
      * Processing times (in case pre-specified)
      */
@@ -52,13 +52,7 @@ public class Agent implements CProcess, ProductAcceptor {
      * Processing time iterator
      */
     private int procCnt;
-
-    public boolean isCorporate() {
-        return corporate;
-    }
-
-    private boolean corporate;
-
+    private final boolean corporate;
 
     /**
      * Constructor
@@ -108,6 +102,10 @@ public class Agent implements CProcess, ProductAcceptor {
         } else {
             return drawRandomTrancatedNormal(mean, variance, min);
         }
+    }
+
+    public boolean isCorporate() {
+        return corporate;
     }
 
     /**

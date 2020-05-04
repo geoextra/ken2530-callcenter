@@ -8,18 +8,19 @@ import java.util.ArrayList;
  * @author Joel Karel
  * @version %I%, %G%
  */
+
 public class Sink implements ProductAcceptor {
     /**
      * All products are kept
      */
-    private ArrayList<Customer> customers;
+    private final ArrayList<Customer> customers;
     /**
      * All properties of products are kept
      */
-    private ArrayList<Integer> numbers;
-    private ArrayList<Double> times;
-    private ArrayList<String> events;
-    private ArrayList<String> stations;
+    private final ArrayList<Integer> numbers;
+    private final ArrayList<Double> times;
+    private final ArrayList<String> events;
+    private final ArrayList<String> stations;
     /**
      * Counter to number products
      */
@@ -27,7 +28,7 @@ public class Sink implements ProductAcceptor {
     /**
      * Name of the sink
      */
-    private String name;
+    private final String name;
 
     /**
      * Constructor, creates objects

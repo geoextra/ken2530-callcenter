@@ -12,27 +12,28 @@ public class Source implements CProcess {
     /**
      * Eventlist that will be requested to construct events
      */
-    private CEventList list;
+    private final CEventList list;
     /**
      * Queue that buffers products for the machine
      */
-    private ProductAcceptor queue;
+    private final ProductAcceptor queue;
     /**
      * Name of the source
      */
-    private String name;
+    private final String name;
     /**
      * Mean interarrival time
      */
-    private double meanArrTime;
+    private final double meanArrTime;
 
-    private boolean generateCoporateCostumers;
+    private final boolean generateCoporateCostumers;
     private double previousArrivalTime = 0;
 
     /**
      * Constructor, creates objects
      * Interarrival times are exponentially distributed with specified mean
-     *  @param q The receiver of the products
+     *
+     * @param q The receiver of the products
      * @param l The eventlist that is requested to construct events
      * @param n Name of object
      * @param m Mean arrival time
@@ -64,12 +65,12 @@ public class Source implements CProcess {
         double u1 = Math.random();
         double u2 = Math.random();
 
-        nextArrivalTime = nextArrivalTime - (1/lambda) * Math.log(u1);
+        nextArrivalTime = nextArrivalTime - (1 / lambda) * Math.log(u1);
 
         if (u2 <= lambda / lambda) {
             return nextArrivalTime;
         } else {
-            return  drawRandomArrivalTime(lambda);
+            return drawRandomArrivalTime(lambda);
         }
     }
 
