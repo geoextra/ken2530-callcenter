@@ -20,10 +20,6 @@ public class Agent implements CProcess, ProductAcceptor {
      */
     private final String name;
     /**
-     * Product that is being handled
-     */
-    private Customer customer;
-    /**
      * Queue from which the machine has to take products
      */
     private final Queue queue;
@@ -31,10 +27,6 @@ public class Agent implements CProcess, ProductAcceptor {
      * Sink to dump products
      */
     private final ProductAcceptor sink;
-    /**
-     * Status of the machine (b=busy, i=idle)
-     */
-    private boolean busy;
     /**
      * Mean processing time
      */
@@ -45,14 +37,21 @@ public class Agent implements CProcess, ProductAcceptor {
     private final double corporateDerivProcTime;
     private final double corporateMinProcTime;
     /**
+     * Processing time iterator
+     */
+    private final boolean corporate;
+    /**
+     * Product that is being handled
+     */
+    private Customer customer;
+    /**
+     * Status of the machine
+     */
+    private boolean busy;
+    /**
      * Processing times (in case pre-specified)
      */
     private double[] processingTimes;
-    /**
-     * Processing time iterator
-     */
-    private int procCnt;
-    private final boolean corporate;
 
     /**
      * Constructor
@@ -80,19 +79,6 @@ public class Agent implements CProcess, ProductAcceptor {
 
         corporate = c;
         queue.askCustomer(this);
-
-       /* for (int i = 0; i < 500; i++) {
-            drawRandomTrancatedNormal(72, derivProcTime * derivProcTime);
-        }
-        System.out.println("");*/
-    }
-
-    public static double drawRandomExponential(double mean) {
-        // draw a [0,1] uniform distributed number
-        double u = Math.random();
-        // Convert it into a exponentially distributed random variate with mean 33
-        double res = -mean * Math.log(u);
-        return res;
     }
 
     public static double drawRandomTrancatedNormal(double mean, double variance, double min) {
@@ -158,9 +144,9 @@ public class Agent implements CProcess, ProductAcceptor {
     private void startProduction() {
         double duration;
         if (customer.isCorporate()) {
-            duration = drawRandomTrancatedNormal(corporateMeanProcTime, corporateDerivProcTime * corporateDerivProcTime, corporateMinProcTime);
+            duration = drawRandomTrancatedNormal(corporateMeanProcTime, Math.pow(corporateDerivProcTime, 2), corporateMinProcTime);
         } else {
-            duration = drawRandomTrancatedNormal(consumerMeanProcTime, consumerDerivProcTime * consumerDerivProcTime, consumerMinProcTime);
+            duration = drawRandomTrancatedNormal(consumerMeanProcTime, Math.pow(consumerDerivProcTime, 2), consumerMinProcTime);
         }
         // Create a new event in the eventlist
         double tme = eventlist.getTime();

@@ -24,7 +24,7 @@ public class Source implements CProcess {
     /**
      * Mean interarrival time
      */
-    private final double meanArrTime;
+    private final double lambda;
 
     private final boolean generateCoporateCostumers;
     private double previousArrivalTime = 0;
@@ -43,18 +43,10 @@ public class Source implements CProcess {
         list = l;
         queue = q;
         name = n;
-        meanArrTime = m;
+        lambda = m;
         generateCoporateCostumers = c;
         // put first event in list for initialization
-        list.add(this, 0, drawRandomExponential(meanArrTime)); //target,type,time
-    }
-
-    public static double drawRandomExponential(double mean) {
-        // draw a [0,1] uniform distributed number
-        double u = Math.random();
-        // Convert it into a exponentially distributed random variate
-        double res = -mean * Math.log(u);
-        return res;
+        list.add(this, 0, drawRandomArrivalTime(lambda)); //target,type,time
     }
 
     // Lewis and Shedler (1979)
@@ -85,7 +77,7 @@ public class Source implements CProcess {
         // generate duration
         // double duration = drawRandomExponential(meanArrTime);
         previousArrivalTime = tme;
-        double duration = drawRandomArrivalTime(meanArrTime);
+        double duration = drawRandomArrivalTime(lambda);
         previousArrivalTime = duration;
         // Create a new event in the eventlist
         list.add(this, 0, tme + duration - tme); //target,type,time

@@ -13,19 +13,22 @@ public class Simulation {
      */
 
     public static void main(String[] args) {
-        // Create an eventlist
         CEventList eventList = new CEventList();
 
         Queue consumerQueue = new Queue();
+        Queue corporateQueue = new Queue();
 
-        Source consumerSource = new Source(consumerQueue, eventList, "Source 1", 2, false);
+        Source consumerSource = new Source(consumerQueue, eventList, "Consumer Source", 30, false);
+        Source corporateSource = new Source(corporateQueue, eventList, "Corporate Source", 30, true);
 
-        Sink consumerSink = new Sink("Sink 1");
+        Sink consumerSink = new Sink("Consumer sink");
+        Sink corporateSink = new Sink("Corporate sink");
 
-        Agent consumerAgent1 = new Agent(consumerQueue, consumerSink, eventList, "Agent 1", false);
-        Agent consumerAgent2 = new Agent(consumerQueue, consumerSink, eventList, "Agent 2", false);
+        Agent consumerAgent1 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 1", false);
+        Agent consumerAgent2 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 2", false);
 
-        // start the eventlist
+        Agent corporateAgent1 = new Agent(corporateQueue, corporateSink, eventList, "Corporate Agent 1", true);
+
         eventList.start(2000); // 2000 is maximum time
     }
 }

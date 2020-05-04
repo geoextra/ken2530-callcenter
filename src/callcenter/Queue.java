@@ -12,11 +12,11 @@ public class Queue implements ProductAcceptor {
     /**
      * List in which the products are kept
      */
-    private ArrayList<Customer> row;
+    private final ArrayList<Customer> row;
     /**
      * Requests from machine that will be handling the products
      */
-    private ArrayList<Agent> requests;
+    private final ArrayList<Agent> requests;
 
     /**
      * Initializes the queue and introduces a dummy machine

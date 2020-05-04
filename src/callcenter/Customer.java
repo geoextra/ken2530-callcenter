@@ -9,20 +9,18 @@ import java.util.ArrayList;
  * @version %I%, %G%
  */
 class Customer {
-    private boolean corporate;
+    private final boolean corporate;
 
     /**
      * Stamps for the products
      */
-    private ArrayList<Double> times;
-    private ArrayList<String> events;
-    private ArrayList<String> stations;
+    private final ArrayList<Double> times;
+    private final ArrayList<String> events;
+    private final ArrayList<String> stations;
 
     /**
      * Constructor for the product
      * Mark the time at which it is created
-     *
-     * @param create The current time
      */
     public Customer(boolean corporate) {
         this.corporate = corporate;

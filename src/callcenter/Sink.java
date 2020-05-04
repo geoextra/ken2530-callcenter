@@ -22,13 +22,13 @@ public class Sink implements ProductAcceptor {
     private final ArrayList<String> events;
     private final ArrayList<String> stations;
     /**
-     * Counter to number products
-     */
-    private int number;
-    /**
      * Name of the sink
      */
     private final String name;
+    /**
+     * Counter to number products
+     */
+    private int number;
 
     /**
      * Constructor, creates objects

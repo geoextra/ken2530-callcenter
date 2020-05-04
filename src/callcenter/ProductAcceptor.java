@@ -14,5 +14,5 @@ public interface ProductAcceptor {
      * @param p The product that is accepted
      * @return true if accepted
      */
-    public boolean giveCustomer(Customer p);
+    boolean giveCustomer(Customer p);
 }
