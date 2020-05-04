@@ -117,10 +117,10 @@ public class CEventList implements CProcess {
      * Method to have this object process an event
      *
      * @param type The type of the event that has to be executed
-     * @param tme  The current time
+     * @param time  The current time
      */
     @Override
-    public void execute(int type, double tme) {
+    public void execute(int type, double time) {
         if (type == -1)
             stop();
     }
