@@ -8,7 +8,9 @@ import java.util.ArrayList;
  * @author Joel Karel
  * @version %I%, %G%
  */
-class Product {
+class Customer {
+    private boolean corporate;
+
     /**
      * Stamps for the products
      */
@@ -22,10 +24,15 @@ class Product {
      *
      * @param create The current time
      */
-    public Product() {
+    public Customer(boolean corporate) {
+        this.corporate = corporate;
         times = new ArrayList<>();
         events = new ArrayList<>();
         stations = new ArrayList<>();
+    }
+
+    public boolean getCorporate() {
+        return corporate;
     }
 
 

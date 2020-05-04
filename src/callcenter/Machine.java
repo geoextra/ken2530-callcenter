@@ -18,7 +18,7 @@ public class Machine implements CProcess, ProductAcceptor {
     /**
      * Product that is being handled
      */
-    private Product product;
+    private Customer customer;
     /**
      * Queue from which the machine has to take products
      */
@@ -124,9 +124,9 @@ public class Machine implements CProcess, ProductAcceptor {
         // show arrival
         System.out.println("Product finished at time = " + tme);
         // Remove product from system
-        product.stamp(tme, "Production complete", name);
-        sink.giveProduct(product);
-        product = null;
+        customer.stamp(tme, "Production complete", name);
+        sink.giveProduct(customer);
+        customer = null;
         // set machine status to idle
         status = 'i';
         // Ask the queue for products
@@ -140,13 +140,13 @@ public class Machine implements CProcess, ProductAcceptor {
      * @return true if the product is accepted and started, false in all other cases
      */
     @Override
-    public boolean giveProduct(Product p) {
+    public boolean giveProduct(Customer p) {
         // Only accept something if the machine is idle
         if (status == 'i') {
             // accept the product
-            product = p;
+            customer = p;
             // mark starting time
-            product.stamp(eventlist.getTime(), "Production started", name);
+            customer.stamp(eventlist.getTime(), "Production started", name);
             // start production
             startProduction();
             // Flag that the product has arrived

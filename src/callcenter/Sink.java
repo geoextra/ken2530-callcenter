@@ -12,7 +12,7 @@ public class Sink implements ProductAcceptor {
     /**
      * All products are kept
      */
-    private ArrayList<Product> products;
+    private ArrayList<Customer> customers;
     /**
      * All properties of products are kept
      */
@@ -34,7 +34,7 @@ public class Sink implements ProductAcceptor {
      */
     public Sink(String n) {
         name = n;
-        products = new ArrayList<>();
+        customers = new ArrayList<>();
         numbers = new ArrayList<>();
         times = new ArrayList<>();
         events = new ArrayList<>();
@@ -43,9 +43,9 @@ public class Sink implements ProductAcceptor {
     }
 
     @Override
-    public boolean giveProduct(Product p) {
+    public boolean giveProduct(Customer p) {
         number++;
-        products.add(p);
+        customers.add(p);
         // store stamps
         ArrayList<Double> t = p.getTimes();
         ArrayList<String> e = p.getEvents();

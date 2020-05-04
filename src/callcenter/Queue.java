@@ -12,7 +12,7 @@ public class Queue implements ProductAcceptor {
     /**
      * List in which the products are kept
      */
-    private ArrayList<Product> row;
+    private ArrayList<Customer> row;
     /**
      * Requests from machine that will be handling the products
      */
@@ -50,7 +50,7 @@ public class Queue implements ProductAcceptor {
      * Offer a product to the queue
      * It is investigated whether a machine wants the product, otherwise it is stored
      */
-    public boolean giveProduct(Product p) {
+    public boolean giveProduct(Customer p) {
         // Check if the machine accepts it
         if (requests.size() < 1)
             row.add(p); // Otherwise store it
