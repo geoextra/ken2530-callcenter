@@ -102,7 +102,7 @@ public class Source implements CProcess {
         // show arrival
         System.out.println("Arrival at time = " + tme);
         // give arrived product to queue
-        Customer p = new Customer();
+        Customer p = new Customer(false);
         p.stamp(tme, "Creation", name);
         queue.giveProduct(p);
         // generate duration
