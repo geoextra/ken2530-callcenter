@@ -34,12 +34,16 @@ public class Agent implements CProcess, ProductAcceptor {
     /**
      * Status of the machine (b=busy, i=idle)
      */
-    private char status;
+    private boolean busy;
     /**
      * Mean processing time
      */
-    private double meanProcTime;
-    private double derivProcTime;
+    private double consumerMeanProcTime;
+    private double consumerDerivProcTime;
+    private double consumerMinProcTime;
+    private double corporateMeanProcTime;
+    private double corporateDerivProcTime;
+    private double corporateMinProcTime;
     /**
      * Processing times (in case pre-specified)
      */
@@ -59,69 +63,34 @@ public class Agent implements CProcess, ProductAcceptor {
     /**
      * Constructor
      * Service times are exponentially distributed with mean 30
-     *  @param q Queue from which the machine has to take products
+     *
+     * @param q Queue from which the machine has to take products
      * @param s Where to send the completed products
      * @param e Eventlist that will manage events
      * @param n The name of the machine
      * @param c Indicator if agent is corporate
      */
     public Agent(Queue q, ProductAcceptor s, CEventList e, String n, boolean c) {
-        status = 'i';
+        busy = false;
         queue = q;
         sink = s;
         eventlist = e;
         name = n;
-        meanProcTime = 72;
-        derivProcTime = 35;
+        consumerMeanProcTime = 72;
+        consumerDerivProcTime = 35;
+        consumerMinProcTime = 25;
+
+        corporateMeanProcTime = 216;
+        corporateDerivProcTime = 72;
+        corporateMinProcTime = 45;
+
         corporate = c;
         queue.askCustomer(this);
 
-        for (int i = 0; i < 500; i++) {
+       /* for (int i = 0; i < 500; i++) {
             drawRandomTrancatedNormal(72, derivProcTime * derivProcTime);
         }
-        System.out.println("");
-    }
-
-    /**
-     * Constructor
-     * Service times are exponentially distributed with specified mean
-     *
-     * @param q Queue from which the machine has to take products
-     * @param s Where to send the completed products
-     * @param e Eventlist that will manage events
-     * @param n The name of the machine
-     * @param m Mean processing time
-     */
-    public Agent(Queue q, ProductAcceptor s, CEventList e, String n, double m) {
-        status = 'i';
-        queue = q;
-        sink = s;
-        eventlist = e;
-        name = n;
-        meanProcTime = m;
-        queue.askCustomer(this);
-    }
-
-    /**
-     * Constructor
-     * Service times are pre-specified
-     *
-     * @param q  Queue from which the machine has to take products
-     * @param s  Where to send the completed products
-     * @param e  Eventlist that will manage events
-     * @param n  The name of the machine
-     * @param st service times
-     */
-    public Agent(Queue q, ProductAcceptor s, CEventList e, String n, double[] st) {
-        status = 'i';
-        queue = q;
-        sink = s;
-        eventlist = e;
-        name = n;
-        meanProcTime = -1;
-        processingTimes = st;
-        procCnt = 0;
-        queue.askCustomer(this);
+        System.out.println("");*/
     }
 
     public static double drawRandomExponential(double mean) {
@@ -132,21 +101,13 @@ public class Agent implements CProcess, ProductAcceptor {
         return res;
     }
 
-    public static double erf2(double z) {
-        double t = 1.0 / (1.0 + 0.47047 * Math.abs(z));
-        double poly = t * (0.3480242 + t * (-0.0958798 + t * (0.7478556)));
-        double ans = 1.0 - poly * Math.exp(-z*z);
-        if (z >= 0) return  ans;
-        else        return -ans;
-    }
-
-    public static double drawRandomTrancatedNormal(double mean, double variance) {
+    public static double drawRandomTrancatedNormal(double mean, double variance, double min) {
         double number = Agent.randomGenerator.nextGaussian() * Math.sqrt(variance) + mean;
         System.out.print(number + ", ");
-        if(number >= 45) {
+        if (number >= min) {
             return number;
         } else {
-            return drawRandomTrancatedNormal(mean, variance);
+            return drawRandomTrancatedNormal(mean, variance, min);
         }
     }
 
@@ -164,23 +125,23 @@ public class Agent implements CProcess, ProductAcceptor {
         sink.giveCustomer(customer);
         customer = null;
         // set machine status to idle
-        status = 'i';
+        busy = false;
         // Ask the queue for products
         queue.askCustomer(this);
     }
 
     /**
-     * Let the machine accept a product and let it start handling it
+     * Let the machine accept a customer and let it start handling it
      *
-     * @param p The product that is offered
+     * @param c The customer that is offered
      * @return true if the product is accepted and started, false in all other cases
      */
     @Override
-    public boolean giveCustomer(Customer p) {
+    public boolean giveCustomer(Customer c) {
         // Only accept something if the machine is idle
-        if (status == 'i') {
+        if (!busy && isCorporate() == c.isCorporate()) {
             // accept the product
-            customer = p;
+            customer = c;
             // mark starting time
             customer.stamp(eventlist.getTime(), "Production started", name);
             // start production
@@ -198,23 +159,16 @@ public class Agent implements CProcess, ProductAcceptor {
      * This time is placed in the eventlist
      */
     private void startProduction() {
-        // generate duration
-        if (meanProcTime > 0) {
-            double duration = drawRandomExponential(meanProcTime);
-            // Create a new event in the eventlist
-            double tme = eventlist.getTime();
-            eventlist.add(this, 0, tme + duration); //target,type,time
-            // set status to busy
-            status = 'b';
+        double duration;
+        if (customer.isCorporate()) {
+            duration = drawRandomTrancatedNormal(corporateMeanProcTime, corporateDerivProcTime * corporateDerivProcTime, corporateMinProcTime);
         } else {
-            if (processingTimes.length > procCnt) {
-                eventlist.add(this, 0, eventlist.getTime() + processingTimes[procCnt]); //target,type,time
-                // set status to busy
-                status = 'b';
-                procCnt++;
-            } else {
-                eventlist.stop();
-            }
+            duration = drawRandomTrancatedNormal(consumerMeanProcTime, consumerDerivProcTime * consumerDerivProcTime, consumerMinProcTime);
         }
+        // Create a new event in the eventlist
+        double tme = eventlist.getTime();
+        eventlist.add(this, 0, tme + duration); //target,type,time
+        // set status to busy
+        busy = true;
     }
 }

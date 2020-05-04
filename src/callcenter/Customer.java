@@ -31,7 +31,7 @@ class Customer {
         stations = new ArrayList<>();
     }
 
-    public boolean getCorporate() {
+    public boolean isCorporate() {
         return corporate;
     }
 
