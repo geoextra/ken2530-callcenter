@@ -25,76 +25,52 @@ public class Source implements CProcess {
      * Mean interarrival time
      */
     private double meanArrTime;
-    /**
-     * Interarrival times (in case pre-specified)
-     */
-    private double[] interarrivalTimes;
-    /**
-     * Interarrival time iterator
-     */
-    private int interArrCnt;
 
-    /**
-     * Constructor, creates objects
-     * Interarrival times are exponentially distributed with mean 33
-     *
-     * @param q The receiver of the products
-     * @param l The eventlist that is requested to construct events
-     * @param n Name of object
-     */
-    public Source(ProductAcceptor q, CEventList l, String n) {
-        list = l;
-        queue = q;
-        name = n;
-        meanArrTime = 33;
-        // put first event in list for initialization
-        list.add(this, 0, drawRandomExponential(meanArrTime)); //target,type,time
-    }
+    private boolean generateCoporateCostumers;
+    private double previousArrivalTime = 0;
 
     /**
      * Constructor, creates objects
      * Interarrival times are exponentially distributed with specified mean
-     *
-     * @param q The receiver of the products
+     *  @param q The receiver of the products
      * @param l The eventlist that is requested to construct events
      * @param n Name of object
      * @param m Mean arrival time
+     * @param c corporate
      */
-    public Source(ProductAcceptor q, CEventList l, String n, double m) {
+    public Source(ProductAcceptor q, CEventList l, String n, double m, boolean c) {
         list = l;
         queue = q;
         name = n;
         meanArrTime = m;
+        generateCoporateCostumers = c;
         // put first event in list for initialization
         list.add(this, 0, drawRandomExponential(meanArrTime)); //target,type,time
-    }
-
-    /**
-     * Constructor, creates objects
-     * Interarrival times are prespecified
-     *
-     * @param q  The receiver of the products
-     * @param l  The eventlist that is requested to construct events
-     * @param n  Name of object
-     * @param ia interarrival times
-     */
-    public Source(ProductAcceptor q, CEventList l, String n, double[] ia) {
-        list = l;
-        queue = q;
-        name = n;
-        meanArrTime = -1;
-        interarrivalTimes = ia;
-        interArrCnt = 0;
-        // put first event in list for initialization
-        list.add(this, 0, interarrivalTimes[0]); //target,type,time
     }
 
     public static double drawRandomExponential(double mean) {
         // draw a [0,1] uniform distributed number
         double u = Math.random();
-        // Convert it into a exponentially distributed random variate with mean 33
+        // Convert it into a exponentially distributed random variate
         double res = -mean * Math.log(u);
         return res;
+    }
+
+    // Lewis and Shedler (1979)
+    public double drawRandomArrivalTime(double lambda) {
+        double nextArrivalTime = previousArrivalTime;
+
+
+        double u1 = Math.random();
+        double u2 = Math.random();
+
+        nextArrivalTime = nextArrivalTime - (1/lambda) * Math.log(u1);
+
+        if (u2 <= lambda / lambda) {
+            return nextArrivalTime;
+        } else {
+            return  drawRandomArrivalTime(lambda);
+        }
     }
 
     @Override
@@ -102,21 +78,15 @@ public class Source implements CProcess {
         // show arrival
         System.out.println("Arrival at time = " + tme);
         // give arrived product to queue
-        Customer p = new Customer(false);
+        Customer p = new Customer(generateCoporateCostumers);
         p.stamp(tme, "Creation", name);
         queue.giveCustomer(p);
         // generate duration
-        if (meanArrTime > 0) {
-            double duration = drawRandomExponential(meanArrTime);
-            // Create a new event in the eventlist
-            list.add(this, 0, tme + duration); //target,type,time
-        } else {
-            interArrCnt++;
-            if (interarrivalTimes.length > interArrCnt) {
-                list.add(this, 0, tme + interarrivalTimes[interArrCnt]); //target,type,time
-            } else {
-                list.stop();
-            }
-        }
+        // double duration = drawRandomExponential(meanArrTime);
+        previousArrivalTime = tme;
+        double duration = drawRandomArrivalTime(meanArrTime);
+        previousArrivalTime = duration;
+        // Create a new event in the eventlist
+        list.add(this, 0, tme + duration - tme); //target,type,time
     }
 }

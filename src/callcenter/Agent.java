@@ -103,7 +103,6 @@ public class Agent implements CProcess, ProductAcceptor {
 
     public static double drawRandomTrancatedNormal(double mean, double variance, double min) {
         double number = Agent.randomGenerator.nextGaussian() * Math.sqrt(variance) + mean;
-        System.out.print(number + ", ");
         if (number >= min) {
             return number;
         } else {
