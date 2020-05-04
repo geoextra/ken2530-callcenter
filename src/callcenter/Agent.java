@@ -1,5 +1,7 @@
 package callcenter;
 
+import java.util.Random;
+
 /**
  * Machine in a factory
  *
@@ -7,6 +9,8 @@ package callcenter;
  * @version %I%, %G%
  */
 public class Agent implements CProcess, ProductAcceptor {
+    private static Random randomGenerator = new Random();
+
     /**
      * Eventlist that will manage events
      */
@@ -35,6 +39,7 @@ public class Agent implements CProcess, ProductAcceptor {
      * Mean processing time
      */
     private double meanProcTime;
+    private double derivProcTime;
     /**
      * Processing times (in case pre-specified)
      */
@@ -58,7 +63,7 @@ public class Agent implements CProcess, ProductAcceptor {
      * @param s Where to send the completed products
      * @param e Eventlist that will manage events
      * @param n The name of the machine
-     * @param corporate
+     * @param c Indicator if agent is corporate
      */
     public Agent(Queue q, ProductAcceptor s, CEventList e, String n, boolean c) {
         status = 'i';
@@ -66,9 +71,15 @@ public class Agent implements CProcess, ProductAcceptor {
         sink = s;
         eventlist = e;
         name = n;
-        meanProcTime = 30;
+        meanProcTime = 72;
+        derivProcTime = 35;
         corporate = c;
-        queue.askProduct(this);
+        queue.askCustomer(this);
+
+        for (int i = 0; i < 500; i++) {
+            drawRandomTrancatedNormal(72, derivProcTime * derivProcTime);
+        }
+        System.out.println("");
     }
 
     /**
@@ -88,7 +99,7 @@ public class Agent implements CProcess, ProductAcceptor {
         eventlist = e;
         name = n;
         meanProcTime = m;
-        queue.askProduct(this);
+        queue.askCustomer(this);
     }
 
     /**
@@ -110,7 +121,7 @@ public class Agent implements CProcess, ProductAcceptor {
         meanProcTime = -1;
         processingTimes = st;
         procCnt = 0;
-        queue.askProduct(this);
+        queue.askCustomer(this);
     }
 
     public static double drawRandomExponential(double mean) {
@@ -119,6 +130,24 @@ public class Agent implements CProcess, ProductAcceptor {
         // Convert it into a exponentially distributed random variate with mean 33
         double res = -mean * Math.log(u);
         return res;
+    }
+
+    public static double erf2(double z) {
+        double t = 1.0 / (1.0 + 0.47047 * Math.abs(z));
+        double poly = t * (0.3480242 + t * (-0.0958798 + t * (0.7478556)));
+        double ans = 1.0 - poly * Math.exp(-z*z);
+        if (z >= 0) return  ans;
+        else        return -ans;
+    }
+
+    public static double drawRandomTrancatedNormal(double mean, double variance) {
+        double number = Agent.randomGenerator.nextGaussian() * Math.sqrt(variance) + mean;
+        System.out.print(number + ", ");
+        if(number >= 45) {
+            return number;
+        } else {
+            return drawRandomTrancatedNormal(mean, variance);
+        }
     }
 
     /**
@@ -132,12 +161,12 @@ public class Agent implements CProcess, ProductAcceptor {
         System.out.println("Product finished at time = " + tme);
         // Remove product from system
         customer.stamp(tme, "Production complete", name);
-        sink.giveProduct(customer);
+        sink.giveCustomer(customer);
         customer = null;
         // set machine status to idle
         status = 'i';
         // Ask the queue for products
-        queue.askProduct(this);
+        queue.askCustomer(this);
     }
 
     /**
@@ -147,7 +176,7 @@ public class Agent implements CProcess, ProductAcceptor {
      * @return true if the product is accepted and started, false in all other cases
      */
     @Override
-    public boolean giveProduct(Customer p) {
+    public boolean giveCustomer(Customer p) {
         // Only accept something if the machine is idle
         if (status == 'i') {
             // accept the product

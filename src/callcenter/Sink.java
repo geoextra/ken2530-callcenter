@@ -43,7 +43,7 @@ public class Sink implements ProductAcceptor {
     }
 
     @Override
-    public boolean giveProduct(Customer p) {
+    public boolean giveCustomer(Customer p) {
         number++;
         customers.add(p);
         // store stamps

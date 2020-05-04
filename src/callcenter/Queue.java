@@ -31,11 +31,11 @@ public class Queue implements ProductAcceptor {
      * Asks a queue to give a product to a machine
      * True is returned if a product could be delivered; false if the request is queued
      */
-    public boolean askProduct(Agent agent) {
+    public boolean askCustomer(Agent agent) {
         // This is only possible with a non-empty queue
         if (row.size() > 0) {
             // If the machine accepts the product
-            if (agent.giveProduct(row.get(0))) {
+            if (agent.giveCustomer(row.get(0))) {
                 row.remove(0);// Remove it from the queue
                 return true;
             } else
@@ -50,14 +50,14 @@ public class Queue implements ProductAcceptor {
      * Offer a product to the queue
      * It is investigated whether a machine wants the product, otherwise it is stored
      */
-    public boolean giveProduct(Customer p) {
+    public boolean giveCustomer(Customer p) {
         // Check if the machine accepts it
         if (requests.size() < 1)
             row.add(p); // Otherwise store it
         else {
             boolean delivered = false;
             while (!delivered & (requests.size() > 0)) {
-                delivered = requests.get(0).giveProduct(p);
+                delivered = requests.get(0).giveCustomer(p);
                 // remove the request regardless of whether or not the product has been accepted
                 requests.remove(0);
             }

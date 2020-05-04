@@ -104,7 +104,7 @@ public class Source implements CProcess {
         // give arrived product to queue
         Customer p = new Customer(false);
         p.stamp(tme, "Creation", name);
-        queue.giveProduct(p);
+        queue.giveCustomer(p);
         // generate duration
         if (meanArrTime > 0) {
             double duration = drawRandomExponential(meanArrTime);
