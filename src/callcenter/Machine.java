@@ -1,4 +1,4 @@
-package simulation;
+package callcenter;
 
 /**
  * Machine in a factory

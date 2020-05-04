@@ -5,7 +5,7 @@
  * @author Joel Karel
  * @version %I%, %G%
  */
-package simulation;
+package callcenter;
 
 public class CEvent {
     /** The object involved with the event */

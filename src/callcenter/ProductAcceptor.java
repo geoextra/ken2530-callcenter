@@ -1,4 +1,4 @@
-package simulation;
+package callcenter;
 
 /**
  * Blueprint for accepting products

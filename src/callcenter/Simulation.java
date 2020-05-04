@@ -5,7 +5,7 @@
  * @version %I%, %G%
  */
 
-package simulation;
+package callcenter;
 
 public class Simulation {
 
