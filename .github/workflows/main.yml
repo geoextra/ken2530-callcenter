@@ -20,15 +20,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - uses: actions/setup-java@v1.3.0
-      with:
-        # The Java version to make available on the path. Takes a whole or semver Java version, or 1.x syntax (e.g. 1.8 => Java 8.x)
-        java-version: 10
-        # The package type (jre, jdk, jdk+fx)
-        java-package: jdk # optional, default is jdk
-        # The architecture (x86, x64) of the package.
-        architecture: x64 # optional, default is x64
-    - run: javac src/callcenter/*.java
-    - run: java -cp java src/callcenter/Simulation
+      - uses: actions/setup-java@v1.3.0
+        with:
+          # The Java version to make available on the path. Takes a whole or semver Java version, or 1.x syntax (e.g. 1.8 => Java 8.x)
+          java-version: 10
+          # The package type (jre, jdk, jdk+fx)
+          java-package: jdk # optional, default is jdk
+          # The architecture (x86, x64) of the package.
+          architecture: x64 # optional, default is x64
+      - run: |
+          javac src/callcenter/*.java
+          java -cp java src/callcenter/Simulation
