@@ -31,5 +31,5 @@ jobs:
           # The architecture (x86, x64) of the package.
           architecture: x64 # optional, default is x64
       - run: |
-          javac src/callcenter/*.java
-          java -cp java src/callcenter/Simulation
+          javac -d out src/callcenter/*.java
+          java -cp ./out/callcenter; Simulation
