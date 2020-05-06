@@ -29,7 +29,7 @@ jobs:
           java-package: jdk # optional, default is jdk
           # The architecture (x86, x64) of the package.
           architecture: x64 # optional, default is x64
-      - name: Compile
-          run: javac -d out src/callcenter/*.java
-      - name: Run Simulation
-          run: java -cp out callcenter.Simulation
+      - name: Compile and run Simulation
+          run: |
+            javac -d out src/callcenter/*.java
+            java -cp out callcenter.Simulation
