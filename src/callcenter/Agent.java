@@ -44,10 +44,6 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Status of the agent
      */
     private boolean busy;
-    /**
-     * Processing times (in case pre-specified)
-     */
-    private double[] processingTimes;
 
     /**
      * Constructor
