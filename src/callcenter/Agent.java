@@ -3,7 +3,7 @@ package callcenter;
 import java.util.Random;
 
 /**
- * Machine in a factory
+ * Agent in a factory
  *
  * @author Joel Karel
  * @version %I%, %G%
@@ -16,11 +16,11 @@ public class Agent implements CProcess, CustomerAcceptor {
      */
     private final CEventList eventlist;
     /**
-     * Machine name
+     * Agent name
      */
     private final String name;
     /**
-     * Queue from which the machine has to take customers
+     * Queue from which the agent has to take customers
      */
     private final Queue queue;
     /**
@@ -45,7 +45,7 @@ public class Agent implements CProcess, CustomerAcceptor {
      */
     private Customer customer;
     /**
-     * Status of the machine
+     * Status of the agent
      */
     private boolean busy;
     /**
@@ -57,10 +57,10 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Constructor
      * Service times are exponentially distributed with mean 30
      *
-     * @param q Queue from which the machine has to take customers
+     * @param q Queue from which the agent has to take customers
      * @param s Where to send the completed customers
      * @param e Eventlist that will manage events
-     * @param n The name of the machine
+     * @param n The name of the agent
      * @param c Indicator if agent is corporate
      */
     public Agent(Queue q, CustomerAcceptor s, CEventList e, String n, boolean c) {
@@ -107,21 +107,21 @@ public class Agent implements CProcess, CustomerAcceptor {
         customer.stamp(tme, "Processing finished", name);
         sink.giveCustomer(customer);
         customer = null;
-        // set machine status to idle
+        // set agent status to idle
         busy = false;
         // Ask the queue for customers
         queue.askCustomer(this);
     }
 
     /**
-     * Let the machine accept a customer and let it start handling it
+     * Let the agent accept a customer and let it start handling it
      *
      * @param c The customer that is offered
      * @return true if the customer is accepted and started, false in all other cases
      */
     @Override
     public boolean giveCustomer(Customer c) {
-        // Only accept something if the machine is idle
+        // Only accept something if the agent is idle
         if (!busy && isCorporate() == c.isCorporate()) {
             // accept the customer
             customer = c;

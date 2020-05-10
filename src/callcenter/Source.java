@@ -14,7 +14,7 @@ public class Source implements CProcess {
      */
     private final CEventList list;
     /**
-     * Queue that buffers customers for the machine
+     * Queue that buffers customers for the agent
      */
     private final CustomerAcceptor queue;
     /**
