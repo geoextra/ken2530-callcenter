@@ -34,11 +34,23 @@ public class Simulation {
 
         Agent corporateAgent1 = new Agent(corporateQueue, corporateSink, eventList, "Corporate Agent 1", true);
 
-        eventList.start(2000); // 2000 is maximum time
+        double simulationTime = 20000;
+        eventList.start(simulationTime); // 2000 is maximum time
 
+        System.out.print("[");
         for (Customer consumer : consumerSet) {
-            System.out.println(consumer.getEvents());
-            System.out.println(consumer.getTimes());
+            double creationTime = 0;
+            double pickupTime = simulationTime;
+            for (String eventName : consumer.getEvents()) {
+                if (eventName.equals("Creation")) {
+                    creationTime = consumer.getTimes().get(consumer.getEvents().indexOf(eventName));
+                } else if (eventName.equals("Processing started")) {
+                    pickupTime = consumer.getTimes().get(consumer.getEvents().indexOf(eventName));
+                }
+            }
+            double waitingTime = pickupTime - creationTime;
+            System.out.print(waitingTime + ", ");
         }
+        System.out.println("]");
     }
 }
