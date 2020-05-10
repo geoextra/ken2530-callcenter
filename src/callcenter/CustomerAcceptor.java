@@ -1,17 +1,17 @@
 package callcenter;
 
 /**
- * Blueprint for accepting products
- * Classes that implement this interface can accept products
+ * Blueprint for accepting customers
+ * Classes that implement this interface can accept customers
  *
  * @author Joel Karel
  * @version %I%, %G%
  */
-public interface ProductAcceptor {
+public interface CustomerAcceptor {
     /**
      * Method to have this object process an event
      *
-     * @param p The product that is accepted
+     * @param p The customer that is accepted
      * @return true if accepted
      */
     boolean giveCustomer(Customer p);

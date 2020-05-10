@@ -8,7 +8,7 @@ import java.util.Random;
  * @author Joel Karel
  * @version %I%, %G%
  */
-public class Agent implements CProcess, ProductAcceptor {
+public class Agent implements CProcess, CustomerAcceptor {
     private static final Random randomGenerator = new Random();
 
     /**
@@ -20,13 +20,13 @@ public class Agent implements CProcess, ProductAcceptor {
      */
     private final String name;
     /**
-     * Queue from which the machine has to take products
+     * Queue from which the machine has to take customers
      */
     private final Queue queue;
     /**
-     * Sink to dump products
+     * Sink to dump customers
      */
-    private final ProductAcceptor sink;
+    private final CustomerAcceptor sink;
     /**
      * Mean processing time
      */
@@ -41,7 +41,7 @@ public class Agent implements CProcess, ProductAcceptor {
      */
     private final boolean corporate;
     /**
-     * Product that is being handled
+     * Customer that is being handled
      */
     private Customer customer;
     /**
@@ -57,13 +57,13 @@ public class Agent implements CProcess, ProductAcceptor {
      * Constructor
      * Service times are exponentially distributed with mean 30
      *
-     * @param q Queue from which the machine has to take products
-     * @param s Where to send the completed products
+     * @param q Queue from which the machine has to take customers
+     * @param s Where to send the completed customers
      * @param e Eventlist that will manage events
      * @param n The name of the machine
      * @param c Indicator if agent is corporate
      */
-    public Agent(Queue q, ProductAcceptor s, CEventList e, String n, boolean c) {
+    public Agent(Queue q, CustomerAcceptor s, CEventList e, String n, boolean c) {
         busy = false;
         queue = q;
         sink = s;
@@ -102,14 +102,14 @@ public class Agent implements CProcess, ProductAcceptor {
      */
     public void execute(int type, double tme) {
         // show arrival
-        System.out.println("Product finished at time = " + tme);
-        // Remove product from system
-        customer.stamp(tme, "Production complete", name);
+        System.out.println("Customer finished at time = " + tme);
+        // Remove customer from system
+        customer.stamp(tme, "Processing finished", name);
         sink.giveCustomer(customer);
         customer = null;
         // set machine status to idle
         busy = false;
-        // Ask the queue for products
+        // Ask the queue for customers
         queue.askCustomer(this);
     }
 
@@ -117,28 +117,28 @@ public class Agent implements CProcess, ProductAcceptor {
      * Let the machine accept a customer and let it start handling it
      *
      * @param c The customer that is offered
-     * @return true if the product is accepted and started, false in all other cases
+     * @return true if the customer is accepted and started, false in all other cases
      */
     @Override
     public boolean giveCustomer(Customer c) {
         // Only accept something if the machine is idle
         if (!busy && isCorporate() == c.isCorporate()) {
-            // accept the product
+            // accept the customer
             customer = c;
             // mark starting time
-            customer.stamp(eventlist.getTime(), "Production started", name);
+            customer.stamp(eventlist.getTime(), "Processing started", name);
             // start production
             startProduction();
-            // Flag that the product has arrived
+            // Flag that the customer has arrived
             return true;
         }
-        // Flag that the product has been rejected
+        // Flag that the customer has been rejected
         else return false;
     }
 
     /**
      * Starting routine for the production
-     * Start the handling of the current product with an exponentionally distributed processingtime with average 30
+     * Start the handling of the current customer with an exponentionally distributed processingtime with average 30
      * This time is placed in the eventlist
      */
     private void startProduction() {

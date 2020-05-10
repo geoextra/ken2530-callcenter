@@ -3,7 +3,7 @@ package callcenter;
 import java.util.ArrayList;
 
 /**
- * Product that is send trough the system
+ * Customer that is send trough the system
  *
  * @author Joel Karel
  * @version %I%, %G%
@@ -12,14 +12,14 @@ class Customer {
     private final boolean corporate;
 
     /**
-     * Stamps for the products
+     * Stamps for the customers
      */
     private final ArrayList<Double> times;
     private final ArrayList<String> events;
     private final ArrayList<String> stations;
 
     /**
-     * Constructor for the product
+     * Constructor for the customer
      * Mark the time at which it is created
      */
     public Customer(boolean corporate) {

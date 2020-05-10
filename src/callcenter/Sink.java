@@ -9,13 +9,13 @@ import java.util.ArrayList;
  * @version %I%, %G%
  */
 
-public class Sink implements ProductAcceptor {
+public class Sink implements CustomerAcceptor {
     /**
-     * All products are kept
+     * All customers are kept
      */
     private final ArrayList<Customer> customers;
     /**
-     * All properties of products are kept
+     * All properties of customers are kept
      */
     private final ArrayList<Integer> numbers;
     private final ArrayList<Double> times;
@@ -26,7 +26,7 @@ public class Sink implements ProductAcceptor {
      */
     private final String name;
     /**
-     * Counter to number products
+     * Counter to number customers
      */
     private int number;
 
