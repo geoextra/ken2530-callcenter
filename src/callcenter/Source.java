@@ -21,13 +21,12 @@ public class Source implements CProcess {
      * Name of the source
      */
     private final String name;
-    /**
-     * Mean interarrival time
-     */
-    private final double lambda;
 
     private final boolean generateCoporateCostumers;
     private double previousArrivalTime = 0;
+
+    public double lambdaConsumer_max = 3.8 / 60;
+    public double lambdaCorporate_max = 1.0 / 60;
 
     /**
      * Constructor, creates objects
@@ -43,27 +42,48 @@ public class Source implements CProcess {
         list = l;
         queue = q;
         name = n;
-        lambda = m;
         generateCoporateCostumers = c;
         // put first event in list for initialization
-        list.add(this, 0, drawRandomArrivalTime(lambda)); //target,type,time
+        list.add(this, 0, drawRandomArrivalTime()); //target,type,time
     }
 
     // Lewis and Shedler (1979)
-    public double drawRandomArrivalTime(double lambda) {
+    public double drawRandomArrivalTime() {
         double nextArrivalTime = previousArrivalTime;
 
+        double lambda_max = generateCoporateCostumers ? lambdaCorporate_max : lambdaConsumer_max;
 
         double u1 = Math.random();
         double u2 = Math.random();
 
-        nextArrivalTime = nextArrivalTime - (1 / lambda) * Math.log(u1);
+        nextArrivalTime = nextArrivalTime - ((1 / lambda_max) * Math.log(u1));
 
-        if (u2 <= lambda / lambda) {
+        double numerator = generateCoporateCostumers ? lambdaCorporate(nextArrivalTime) : lambdaConsumer(nextArrivalTime);
+
+        if (u2 <= numerator / lambda_max) {
+            previousArrivalTime = nextArrivalTime;
             return nextArrivalTime;
         } else {
-            return drawRandomArrivalTime(lambda);
+            return drawRandomArrivalTime();
         }
+    }
+
+    public double lambdaConsumer(double time) {
+        double time_h = time * 60 * 60;
+        double rate_m = Math.sin((2 * Math.PI) / 24.0 * (time_h - 9)) * 1.8 + 2;
+        return rate_m / 60;
+    }
+
+    public double lambdaCorporate(double time) {
+        double time_h = time * 60 * 60;
+        double hour_of_the_day = time_h % 24;
+        double rate_m;
+        if (8 <= hour_of_the_day && hour_of_the_day <= 18) {
+            rate_m = 1.0;
+        } else {
+            rate_m = 0.2;
+        }
+        return rate_m / 60;
     }
 
     @Override
@@ -76,9 +96,9 @@ public class Source implements CProcess {
         queue.giveCustomer(p);
         // generate duration
         // double duration = drawRandomExponential(meanArrTime);
-        previousArrivalTime = tme;
-        double duration = drawRandomArrivalTime(lambda);
-        previousArrivalTime = duration;
+        //previousArrivalTime = tme;
+        double duration = drawRandomArrivalTime();
+        // previousArrivalTime = duration;
         // Create a new event in the eventlist
         list.add(this, 0, tme + duration - tme); //target,type,time
     }
