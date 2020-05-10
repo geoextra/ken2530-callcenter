@@ -7,6 +7,9 @@
 
 package callcenter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Simulation {
     /**
      * @param args the command line arguments
@@ -17,9 +20,11 @@ public class Simulation {
 
         Queue consumerQueue = new Queue();
         Queue corporateQueue = new Queue();
+        Set<Customer> consumerSet = new HashSet<>();
+        Set<Customer> corporateSet = new HashSet<>();
 
-        Source consumerSource = new Source(consumerQueue, eventList, "Consumer Source", 30, false);
-        Source corporateSource = new Source(corporateQueue, eventList, "Corporate Source", 30, true);
+        Source consumerSource = new Source(consumerQueue, eventList, "Consumer Source", 30, false, consumerSet);
+        Source corporateSource = new Source(corporateQueue, eventList, "Corporate Source", 30, true, corporateSet);
 
         Sink consumerSink = new Sink("Consumer sink");
         Sink corporateSink = new Sink("Corporate sink");
@@ -30,5 +35,10 @@ public class Simulation {
         Agent corporateAgent1 = new Agent(corporateQueue, corporateSink, eventList, "Corporate Agent 1", true);
 
         eventList.start(2000); // 2000 is maximum time
+
+        for (Customer consumer : consumerSet) {
+            System.out.println(consumer.getEvents());
+            System.out.println(consumer.getTimes());
+        }
     }
 }

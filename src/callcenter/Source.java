@@ -1,5 +1,7 @@
 package callcenter;
 
+import java.util.Set;
+
 /**
  * A source of customers
  * This class implements CProcess so that it can execute events.
@@ -28,6 +30,8 @@ public class Source implements CProcess {
     public double lambdaConsumer_max = 3.8 / 60;
     public double lambdaCorporate_max = 1.0 / 60;
 
+    private final Set<Customer> customerSet;
+
     /**
      * Constructor, creates objects
      * Interarrival times are exponentially distributed with specified mean
@@ -37,14 +41,16 @@ public class Source implements CProcess {
      * @param n Name of object
      * @param m Mean arrival time
      * @param c corporate
+     * @param s pointer to set of customers
      */
-    public Source(CustomerAcceptor q, CEventList l, String n, double m, boolean c) {
+    public Source(CustomerAcceptor q, CEventList l, String n, double m, boolean c, Set<Customer> s) {
         list = l;
         queue = q;
         name = n;
         generateCoporateCostumers = c;
         // put first event in list for initialization
         list.add(this, 0, drawRandomArrivalTime()); //target,type,time
+        this.customerSet = s;
     }
 
     // Lewis and Shedler (1979)
@@ -92,6 +98,7 @@ public class Source implements CProcess {
         System.out.println("Arrival at time = " + tme);
         // give arrived customer to queue
         Customer p = new Customer(generateCoporateCostumers);
+        customerSet.add(p);
         p.stamp(tme, "Creation", name);
         queue.giveCustomer(p);
         // generate duration
