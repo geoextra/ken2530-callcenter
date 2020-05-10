@@ -7,9 +7,7 @@
 
 package callcenter;
 
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 public class Simulation {
     /**
@@ -32,6 +30,9 @@ public class Simulation {
 
         Agent consumerAgent1 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 1", false);
         Agent consumerAgent2 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 2", false);
+        Agent consumerAgent3 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 3", false);
+        Agent consumerAgent4 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 4", false);
+        Agent consumerAgent5 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 5", false);
 
         Agent corporateAgent1 = new Agent(corporateQueue, corporateSink, eventList, "Corporate Agent 1", true);
 
@@ -40,16 +41,17 @@ public class Simulation {
 
         System.out.print("[");
         for (Customer consumer : consumerSet) {
-            double creationTime = 0;
-            double pickupTime = simulationTime;
-            for (String eventName : consumer.getEvents()) {
-                if (eventName.equals("Creation")) {
-                    creationTime = consumer.getTimes().get(consumer.getEvents().indexOf(eventName));
-                } else if (eventName.equals("Processing started")) {
-                    pickupTime = consumer.getTimes().get(consumer.getEvents().indexOf(eventName));
-                }
+            double waitingTime;
+
+            boolean pickedUp = consumer.getEvents().contains("Processing started");
+            if (pickedUp) {
+                double creationTime = consumer.getTimes().get(consumer.getEvents().indexOf("Creation"));
+                double pickupTime = consumer.getTimes().get(consumer.getEvents().indexOf("Processing started"));
+                waitingTime = pickupTime - creationTime;
+            } else {
+                waitingTime = -1;
             }
-            double waitingTime = pickupTime - creationTime;
+
             System.out.print(waitingTime + ", ");
         }
         System.out.println("]");
