@@ -30,6 +30,6 @@ jobs:
           # The architecture (x86, x64) of the package.
           architecture: x64 # optional, default is x64
       - name: Compile and run Simulation
-          run: |
-            javac -d out src/callcenter/*.java
-            java -cp out callcenter.Simulation
+        run: |
+          javac -d out src/callcenter/*.java
+          java -cp out callcenter.Simulation
