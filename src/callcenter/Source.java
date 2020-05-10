@@ -1,7 +1,6 @@
 package callcenter;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A source of customers
@@ -60,8 +59,8 @@ public class Source implements CProcess {
 
         double lambda_max = generateCoporateCostumers ? lambdaCorporate_max : lambdaConsumer_max;
 
-        double u1 = Math.random();
-        double u2 = Math.random();
+        double u1 = Simulation.randomGenerator.nextDouble();
+        double u2 = Simulation.randomGenerator.nextDouble();
 
         nextArrivalTime = nextArrivalTime - ((1 / lambda_max) * Math.log(u1));
 

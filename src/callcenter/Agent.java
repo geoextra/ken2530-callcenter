@@ -1,7 +1,5 @@
 package callcenter;
 
-import java.util.Random;
-
 /**
  * Agent in a factory
  *
@@ -9,8 +7,6 @@ import java.util.Random;
  * @version %I%, %G%
  */
 public class Agent implements CProcess, CustomerAcceptor {
-    private static final Random randomGenerator = new Random();
-
     /**
      * Eventlist that will manage events
      */
@@ -82,7 +78,7 @@ public class Agent implements CProcess, CustomerAcceptor {
     }
 
     public static double drawRandomTrancatedNormal(double mean, double variance, double min) {
-        double number = Agent.randomGenerator.nextGaussian() * Math.sqrt(variance) + mean;
+        double number = Simulation.randomGenerator.nextGaussian() * Math.sqrt(variance) + mean;
         if (number >= min) {
             return number;
         } else {

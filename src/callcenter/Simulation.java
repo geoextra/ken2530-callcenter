@@ -8,11 +8,14 @@
 package callcenter;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 public class Simulation {
     /**
      * @param args the command line arguments
      */
+
+    static final Random randomGenerator = new Random(42);
 
     public static void main(String[] args) {
         CEventList eventList = new CEventList();
