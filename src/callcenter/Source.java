@@ -1,5 +1,6 @@
 package callcenter;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,7 +31,7 @@ public class Source implements CProcess {
     public double lambdaConsumer_max = 3.8 / 60;
     public double lambdaCorporate_max = 1.0 / 60;
 
-    private final Set<Customer> customerSet;
+    private final List<Customer> customerSet;
 
     /**
      * Constructor, creates objects
@@ -41,9 +42,9 @@ public class Source implements CProcess {
      * @param n Name of object
      * @param m Mean arrival time
      * @param c corporate
-     * @param s pointer to set of customers
+     * @param s pointer to list of customers
      */
-    public Source(CustomerAcceptor q, CEventList l, String n, double m, boolean c, Set<Customer> s) {
+    public Source(CustomerAcceptor q, CEventList l, String n, double m, boolean c, List<Customer> s) {
         list = l;
         queue = q;
         name = n;

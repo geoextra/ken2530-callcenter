@@ -8,6 +8,7 @@
 package callcenter;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 public class Simulation {
@@ -20,8 +21,8 @@ public class Simulation {
 
         Queue consumerQueue = new Queue();
         Queue corporateQueue = new Queue();
-        Set<Customer> consumerSet = new HashSet<>();
-        Set<Customer> corporateSet = new HashSet<>();
+        LinkedList<Customer> consumerSet = new LinkedList<>();
+        LinkedList<Customer> corporateSet = new LinkedList<>();
 
         Source consumerSource = new Source(consumerQueue, eventList, "Consumer Source", 30, false, consumerSet);
         Source corporateSource = new Source(corporateQueue, eventList, "Corporate Source", 30, true, corporateSet);
