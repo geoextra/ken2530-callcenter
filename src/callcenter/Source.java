@@ -75,13 +75,13 @@ public class Source implements CProcess {
     }
 
     public double lambdaConsumer(double time) {
-        double time_h = time * 60 * 60;
+        double time_h = time / 60 / 60;
         double rate_m = Math.sin((2 * Math.PI) / 24.0 * (time_h - 9)) * 1.8 + 2;
         return rate_m / 60;
     }
 
     public double lambdaCorporate(double time) {
-        double time_h = time * 60 * 60;
+        double time_h = time / 60 / 60;
         double hour_of_the_day = time_h % 24;
         double rate_m;
         if (8 <= hour_of_the_day && hour_of_the_day <= 18) {
