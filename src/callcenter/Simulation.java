@@ -42,8 +42,12 @@ public class Simulation {
         double simulationTime = 20000;
         eventList.start(simulationTime); // 2000 is maximum time
 
+        double[] waitingTimes = new double[consumerList.size()];
+
         System.out.print("[");
-        for (Customer consumer : consumerSet) {
+        for (int i = 0; i < consumerList.size(); i++) {
+            Customer consumer = consumerList.get(i);
+
             double waitingTime;
 
             boolean pickedUp = consumer.getEvents().contains("Processing started");
@@ -55,8 +59,12 @@ public class Simulation {
                 waitingTime = -1;
             }
 
-            System.out.print(waitingTime + ", ");
+            waitingTimes[i] = waitingTime;
+
+                    System.out.print(waitingTime + ", ");
         }
         System.out.println("]");
+
+
     }
 }
