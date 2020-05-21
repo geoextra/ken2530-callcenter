@@ -42,11 +42,16 @@ public class Simulation {
         double simulationTime = 20000;
         eventList.start(simulationTime); // 2000 is maximum time
 
-        double[] waitingTimes = new double[consumerList.size()];
+        double[] waitingTimesConsumer = waitingTimes(consumerList);
+        double[] waitingTimesCorporate = waitingTimes(corporateList);
+    }
+
+    public static double[] waitingTimes(LinkedList<Customer> customerList) {
+        double[] waitingTimes = new double[customerList.size()];
 
         System.out.print("[");
-        for (int i = 0; i < consumerList.size(); i++) {
-            Customer consumer = consumerList.get(i);
+        for (int i = 0; i < customerList.size(); i++) {
+            Customer consumer = customerList.get(i);
 
             double waitingTime;
 
@@ -61,10 +66,9 @@ public class Simulation {
 
             waitingTimes[i] = waitingTime;
 
-                    System.out.print(waitingTime + ", ");
+            System.out.print(waitingTime + ", ");
         }
         System.out.println("]");
-
-
+        return waitingTimes;
     }
 }
