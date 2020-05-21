@@ -45,6 +45,8 @@ public class Agent implements CProcess, CustomerAcceptor {
      */
     private boolean busy;
 
+    private ShiftType shiftType;
+
     /**
      * Constructor
      * Service times are exponentially distributed with mean 30
@@ -54,8 +56,9 @@ public class Agent implements CProcess, CustomerAcceptor {
      * @param e Eventlist that will manage events
      * @param n The name of the agent
      * @param c Indicator if agent is corporate
+     * @param t shift the agent is belonging to
      */
-    public Agent(Queue q, CustomerAcceptor s, CEventList e, String n, boolean c) {
+    public Agent(Queue q, CustomerAcceptor s, CEventList e, String n, boolean c, ShiftType t) {
         busy = false;
         queue = q;
         sink = s;
@@ -70,6 +73,7 @@ public class Agent implements CProcess, CustomerAcceptor {
         corporateMinProcTime = 45;
 
         corporate = c;
+        shiftType = t;
         queue.askCustomer(this);
     }
 
@@ -105,6 +109,15 @@ public class Agent implements CProcess, CustomerAcceptor {
         queue.askCustomer(this);
     }
 
+    private boolean timeInShift(double time) {
+        double time_h = time / 60 / 60;
+        double hour_of_the_day = time_h % 24;
+        return ((shiftType == ShiftType.MORNING && 6 <= hour_of_the_day && hour_of_the_day < 14) ||
+                (shiftType == ShiftType.AFTERNOON && 14 <= hour_of_the_day && hour_of_the_day < 22) ||
+                (shiftType == ShiftType.NIGHT && 22 <= hour_of_the_day && hour_of_the_day < 6) ||
+                (shiftType == ShiftType.SLAVE));
+    }
+
     /**
      * Let the agent accept a customer and let it start handling it
      *
@@ -114,7 +127,7 @@ public class Agent implements CProcess, CustomerAcceptor {
     @Override
     public boolean giveCustomer(Customer c) {
         // Only accept something if the agent is idle
-        if (!busy && isCorporate() == c.isCorporate()) {
+        if (!busy && isCorporate() == c.isCorporate() && timeInShift(eventlist.getTime())) {
             // accept the customer
             customer = c;
             // mark starting time
