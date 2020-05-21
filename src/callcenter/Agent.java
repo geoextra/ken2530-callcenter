@@ -159,4 +159,12 @@ public class Agent implements CProcess, CustomerAcceptor {
         // set status to busy
         busy = true;
     }
+
+    public int getHourlyCost() {
+        return corporate ? 60 : 35;
+    }
+
+    public int getDailyCost() {
+        return shiftType == ShiftType.SLAVE ? getHourlyCost() * 24 : getHourlyCost() * 8;
+    }
 }
