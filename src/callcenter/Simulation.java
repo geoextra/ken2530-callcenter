@@ -32,22 +32,28 @@ public class Simulation {
         Sink corporateSink = new Sink("Corporate sink");
 
         // 3 shift * 2 agent types * max 20 agents * 10 parameter values
-        for (int i = 0; i < 4; i++) {
-            Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
-            Agent consumerAgent2 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
-            Agent consumerAgent3 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
-            Agent consumerAgent5 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 5", false, ShiftType.AFTERNOON);
+        if(true) {
+            for (int i = 0; i < 7; i++) {
+                Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
+                Agent consumerAgent4 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
+                Agent consumerAgent2 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
 
-
-            Agent corporateAgent1 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.NIGHT);
-            Agent corporateAgent2 = new Agent(corporateQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
-            Agent corporateAgent3 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.MORNING);
+                Agent corporateAgent1 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.MORNING);
+                Agent corporateAgent2 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
+                Agent corporateAgent3 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.NIGHT);
+            }
+        } else {
+            for (int i = 0; i < 7; i++) {
+                Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.SLAVE);
+                Agent corporateAgent4 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.SLAVE);
+            }
         }
-        double simulationTime = 20000;
-        eventList.start(simulationTime); // 2000 is maximum time
+        double daysToSimulate = 1;
+        double simulationTime = daysToSimulate * 24 * 60 * 60;
+        eventList.start(simulationTime);
 
-        double[] waitingTimesConsumer = waitingTimes(consumerList);
-        double[] waitingTimesCorporate = waitingTimes(corporateList);
+        // double[] waitingTimesConsumer = waitingTimes(consumerList);
+        // double[] waitingTimesCorporate = waitingTimes(corporateList);
 
         performanceCheck(consumerList, corporateList);
     }
@@ -89,10 +95,10 @@ public class Simulation {
         double corporateThreshold1 = 3 * 60;
         double corporateThreshold2 = 7 * 60;
 
-        System.out.println(satisfiedCustomers(consumerWaitingTimes, consumerThreshold1));
-        System.out.println(satisfiedCustomers(consumerWaitingTimes, consumerThreshold2));
-        System.out.println(satisfiedCustomers(corporateWaitingTimes, corporateThreshold1));
-        System.out.println(satisfiedCustomers(corporateWaitingTimes, corporateThreshold2));
+        System.out.println("Consumer handled within 5 minutes : " + satisfiedCustomers(consumerWaitingTimes, consumerThreshold1));
+        System.out.println("Consumer handled within 10 minutes : " + satisfiedCustomers(consumerWaitingTimes, consumerThreshold2));
+        System.out.println("Corporates handled within 3 minutes : " + satisfiedCustomers(corporateWaitingTimes, corporateThreshold1));
+        System.out.println("Corporates handled within 7 minutes : " + satisfiedCustomers(corporateWaitingTimes, corporateThreshold2));
     }
 
     public static double satisfiedCustomers(double[] waitingTimesArray, double waitingTimeThreshold) {

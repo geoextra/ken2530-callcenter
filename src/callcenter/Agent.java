@@ -1,7 +1,7 @@
 package callcenter;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Agent in a factory
@@ -10,8 +10,8 @@ import java.util.List;
  * @version %I%, %G%
  */
 public class Agent implements CProcess, CustomerAcceptor {
-    private final static int k = 1;
-    private final static List<Agent> availableCorporateAgents = new LinkedList<>();
+    private final static int k = 100;
+    private final static Set<Agent> availableCorporateAgents = new LinkedHashSet<>();
     /**
      * Eventlist that will manage events
      */
@@ -56,8 +56,8 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Constructor
      * Service times are exponentially distributed with mean 30
      *
-     * @param conQ  Queue from which the agent has to take customers
-     * @param corpQ
+     * @param conQ  Queue from which the agent has to take consumers
+     * @param corpQ Queue from which the agent has to take corporates
      * @param s     Where to send the completed customers
      * @param e     Eventlist that will manage events
      * @param n     The name of the agent
@@ -95,6 +95,9 @@ public class Agent implements CProcess, CustomerAcceptor {
     }
 
     private void becomeIdle() {
+        // set agent status to idle
+        busy = false;
+
         if (isCorporate()) {
             availableCorporateAgents.add(this);
 
@@ -124,8 +127,6 @@ public class Agent implements CProcess, CustomerAcceptor {
         customer.stamp(tme, "Processing finished", name);
         sink.giveCustomer(customer);
         customer = null;
-        // set agent status to idle
-        busy = false;
 
         becomeIdle();
     }
@@ -133,9 +134,10 @@ public class Agent implements CProcess, CustomerAcceptor {
     private boolean timeInShift(double time) {
         double time_h = time / 60 / 60;
         double hour_of_the_day = time_h % 24;
-        return ((shiftType == ShiftType.MORNING && 6 <= hour_of_the_day && hour_of_the_day < 14) ||
-                (shiftType == ShiftType.AFTERNOON && 14 <= hour_of_the_day && hour_of_the_day < 22) ||
-                (shiftType == ShiftType.NIGHT && (22 <= hour_of_the_day || hour_of_the_day < 6)) ||
+        System.out.println(hour_of_the_day);
+        return (((shiftType == ShiftType.MORNING) && (6 <= hour_of_the_day) && (hour_of_the_day < 14)) ||
+                ((shiftType == ShiftType.AFTERNOON) && (14 <= hour_of_the_day) && (hour_of_the_day < 22)) ||
+                ((shiftType == ShiftType.NIGHT) && (22 <= hour_of_the_day || hour_of_the_day < 6)) ||
                 (shiftType == ShiftType.SLAVE));
     }
 
@@ -177,8 +179,8 @@ public class Agent implements CProcess, CustomerAcceptor {
             duration = drawRandomTrancatedNormal(consumerMeanProcTime, Math.pow(consumerDerivProcTime, 2), consumerMinProcTime);
         }
         // Create a new event in the eventlist
-        double tme = eventlist.getTime();
-        eventlist.add(this, 0, tme + duration); //target,type,time
+        double time = eventlist.getTime();
+        eventlist.add(this, 0, time + duration); //target,type,time
         // set status to busy
         busy = true;
     }
