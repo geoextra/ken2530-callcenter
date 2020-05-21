@@ -114,7 +114,7 @@ public class Agent implements CProcess, CustomerAcceptor {
         double hour_of_the_day = time_h % 24;
         return ((shiftType == ShiftType.MORNING && 6 <= hour_of_the_day && hour_of_the_day < 14) ||
                 (shiftType == ShiftType.AFTERNOON && 14 <= hour_of_the_day && hour_of_the_day < 22) ||
-                (shiftType == ShiftType.NIGHT && 22 <= hour_of_the_day && hour_of_the_day < 6) ||
+                (shiftType == ShiftType.NIGHT && (22 <= hour_of_the_day || hour_of_the_day < 6)) ||
                 (shiftType == ShiftType.SLAVE));
     }
 

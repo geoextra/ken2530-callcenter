@@ -37,13 +37,14 @@ public class Simulation {
         Agent consumerAgent4 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 4", false, ShiftType.SLAVE);
         Agent consumerAgent5 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 5", false, ShiftType.MORNING);
 
-        Agent corporateAgent1 = new Agent(corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.AFTERNOON);
 
         double simulationTime = 20000;
         eventList.start(simulationTime); // 2000 is maximum time
 
         double[] waitingTimesConsumer = waitingTimes(consumerList);
         double[] waitingTimesCorporate = waitingTimes(corporateList);
+
+        performanceCheck(consumerList, corporateList);
     }
 
     public static double[] waitingTimes(LinkedList<Customer> customerList) {
@@ -73,12 +74,28 @@ public class Simulation {
     }
 
 
-    public static double[] performanceCheck(LinkedList<Customer> consumerList, LinkedList<Customer> corporateList){
+    public static void performanceCheck(LinkedList<Customer> consumerList, LinkedList<Customer> corporateList) {
         double[] consumerWaitingTimes = waitingTimes(consumerList);
         double[] corporateWaitingTimes = waitingTimes(corporateList);
 
+        double consumerThreshold1 = 5 * 60;
+        double consumerThreshold2 = 10 * 60;
+
+        double corporateThreshold1 = 3 * 60;
+        double corporateThreshold2 = 7 * 60;
+
+        System.out.println(satisfiedCustomers(consumerWaitingTimes, consumerThreshold1));
+        System.out.println(satisfiedCustomers(consumerWaitingTimes, consumerThreshold2));
+        System.out.println(satisfiedCustomers(corporateWaitingTimes, corporateThreshold1));
+        System.out.println(satisfiedCustomers(corporateWaitingTimes, corporateThreshold2));
     }
 
+    public static double satisfiedCustomers(double[] waitingTimesArray, double waitingTimeThreshold) {
+        int customersBelowThreshold = 0;
+        for (double customerWaitingTime: waitingTimesArray) {
+            if (customerWaitingTime <= waitingTimeThreshold && customerWaitingTime != -1) customersBelowThreshold++;
+        }
 
-
+        return (double)customersBelowThreshold / (double)waitingTimesArray.length;
+    }
 }
