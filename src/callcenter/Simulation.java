@@ -31,17 +31,17 @@ public class Simulation {
         Sink consumerSink = new Sink("Consumer sink");
         Sink corporateSink = new Sink("Corporate sink");
 
-         // 3 shift * 2 agent types * max 20 agents * 10 parameter values
-        for (int i = 0; i < 5; i++) {
-            Agent consumerAgent1 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
-            Agent consumerAgent2 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
-            Agent consumerAgent3 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
-            Agent consumerAgent5 = new Agent(consumerQueue, consumerSink, eventList, "Consumer Agent 5", false, ShiftType.AFTERNOON);
+        // 3 shift * 2 agent types * max 20 agents * 10 parameter values
+        for (int i = 0; i < 4; i++) {
+            Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
+            Agent consumerAgent2 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
+            Agent consumerAgent3 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
+            Agent consumerAgent5 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 5", false, ShiftType.AFTERNOON);
 
 
-            Agent corporateAgent1 = new Agent(corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.NIGHT);
-            Agent corporateAgent2 = new Agent(corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
-            Agent corporateAgent3 = new Agent(corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.MORNING);
+            Agent corporateAgent1 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.NIGHT);
+            Agent corporateAgent2 = new Agent(corporateQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
+            Agent corporateAgent3 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.MORNING);
         }
         double simulationTime = 20000;
         eventList.start(simulationTime); // 2000 is maximum time
@@ -97,10 +97,10 @@ public class Simulation {
 
     public static double satisfiedCustomers(double[] waitingTimesArray, double waitingTimeThreshold) {
         int customersBelowThreshold = 0;
-        for (double customerWaitingTime: waitingTimesArray) {
+        for (double customerWaitingTime : waitingTimesArray) {
             if (customerWaitingTime <= waitingTimeThreshold && customerWaitingTime != -1) customersBelowThreshold++;
         }
 
-        return (double)customersBelowThreshold / (double)waitingTimesArray.length;
+        return (double) customersBelowThreshold / (double) waitingTimesArray.length;
     }
 }

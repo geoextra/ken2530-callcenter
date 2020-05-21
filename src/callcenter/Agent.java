@@ -10,6 +10,8 @@ import java.util.List;
  * @version %I%, %G%
  */
 public class Agent implements CProcess, CustomerAcceptor {
+    private final static int k = 1;
+    private final static List<Agent> availableCorporateAgents = new LinkedList<>();
     /**
      * Eventlist that will manage events
      */
@@ -21,7 +23,8 @@ public class Agent implements CProcess, CustomerAcceptor {
     /**
      * Queue from which the agent has to take customers
      */
-    private final Queue queue;
+    private final Queue consumerQueue;
+    private final Queue corporateQueue;
     /**
      * Sink to dump customers
      */
@@ -47,26 +50,24 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Status of the agent
      */
     private boolean busy;
-
-    private ShiftType shiftType;
-
-    private final static int k = 5;
-    private final static List<Agent> availableAgents = new LinkedList<>();
+    private final ShiftType shiftType;
 
     /**
      * Constructor
      * Service times are exponentially distributed with mean 30
      *
-     * @param q Queue from which the agent has to take customers
-     * @param s Where to send the completed customers
-     * @param e Eventlist that will manage events
-     * @param n The name of the agent
-     * @param c Indicator if agent is corporate
-     * @param t shift the agent is belonging to
+     * @param conQ  Queue from which the agent has to take customers
+     * @param corpQ
+     * @param s     Where to send the completed customers
+     * @param e     Eventlist that will manage events
+     * @param n     The name of the agent
+     * @param c     Indicator if agent is corporate
+     * @param t     shift the agent is belonging to
      */
-    public Agent(Queue q, CustomerAcceptor s, CEventList e, String n, boolean c, ShiftType t) {
+    public Agent(Queue conQ, Queue corpQ, CustomerAcceptor s, CEventList e, String n, boolean c, ShiftType t) {
         busy = false;
-        queue = q;
+        consumerQueue = conQ;
+        corporateQueue = corpQ;
         sink = s;
         eventlist = e;
         name = n;
@@ -81,8 +82,7 @@ public class Agent implements CProcess, CustomerAcceptor {
         corporate = c;
         shiftType = t;
 
-        availableAgents.add(this);
-        queue.askCustomer(this);
+        becomeIdle();
     }
 
     public static double drawRandomTrancatedNormal(double mean, double variance, double min) {
@@ -91,6 +91,19 @@ public class Agent implements CProcess, CustomerAcceptor {
             return number;
         } else {
             return drawRandomTrancatedNormal(mean, variance, min);
+        }
+    }
+
+    private void becomeIdle() {
+        if (isCorporate()) {
+            availableCorporateAgents.add(this);
+
+            // Ask the queue for corporate customers
+            corporateQueue.askCustomer(this);
+            if (!busy && availableCorporateAgents.size() > k) consumerQueue.askCustomer(this);
+        } else {
+            // Ask the queue for consumer customers
+            consumerQueue.askCustomer(this);
         }
     }
 
@@ -114,10 +127,7 @@ public class Agent implements CProcess, CustomerAcceptor {
         // set agent status to idle
         busy = false;
 
-        availableAgents.add(this);
-
-        // Ask the queue for customers
-        queue.askCustomer(this);
+        becomeIdle();
     }
 
     private boolean timeInShift(double time) {
@@ -138,8 +148,8 @@ public class Agent implements CProcess, CustomerAcceptor {
     @Override
     public boolean giveCustomer(Customer c) {
         // Only accept something if the agent is idle
-        if (!busy && (isCorporate() == c.isCorporate() && timeInShift(eventlist.getTime())) {
-            availableAgents.remove(this);
+        if (!busy && timeInShift(eventlist.getTime())) {
+            if (isCorporate()) availableCorporateAgents.remove(this);
 
             // accept the customer
             customer = c;
@@ -149,9 +159,6 @@ public class Agent implements CProcess, CustomerAcceptor {
             startProduction();
             // Flag that the customer has arrived
             return true;
-        }
-        if else (!c.isCorporate() && isCorporate() && k_used < k_max) {
-
         }
         // Flag that the customer has been rejected
         else return false;

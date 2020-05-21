@@ -1,6 +1,5 @@
 package callcenter;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -26,12 +25,10 @@ public class Source implements CProcess {
     private final String name;
 
     private final boolean generateCoporateCostumers;
-    private double previousArrivalTime = 0;
-
+    private final List<Customer> customerList;
     public double lambdaConsumer_max = 3.8 / 60;
     public double lambdaCorporate_max = 1.0 / 60;
-
-    private final List<Customer> customerList;
+    private double previousArrivalTime = 0;
 
     /**
      * Constructor, creates objects
