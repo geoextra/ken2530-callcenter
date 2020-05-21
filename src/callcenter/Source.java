@@ -30,7 +30,7 @@ public class Source implements CProcess {
     public double lambdaConsumer_max = 3.8 / 60;
     public double lambdaCorporate_max = 1.0 / 60;
 
-    private final List<Customer> customerSet;
+    private final List<Customer> customerList;
 
     /**
      * Constructor, creates objects
@@ -50,7 +50,7 @@ public class Source implements CProcess {
         generateCoporateCostumers = c;
         // put first event in list for initialization
         list.add(this, 0, drawRandomArrivalTime()); //target,type,time
-        this.customerSet = s;
+        customerList = s;
     }
 
     // Lewis and Shedler (1979)
@@ -98,7 +98,7 @@ public class Source implements CProcess {
         System.out.println("Arrival at time = " + tme);
         // give arrived customer to queue
         Customer p = new Customer(generateCoporateCostumers);
-        customerSet.add(p);
+        customerList.add(p);
         p.stamp(tme, "Creation", name);
         queue.giveCustomer(p);
         // generate duration

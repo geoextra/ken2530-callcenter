@@ -22,11 +22,11 @@ public class Simulation {
 
         Queue consumerQueue = new Queue();
         Queue corporateQueue = new Queue();
-        LinkedList<Customer> consumerSet = new LinkedList<>();
-        LinkedList<Customer> corporateSet = new LinkedList<>();
+        LinkedList<Customer> consumerList = new LinkedList<>();
+        LinkedList<Customer> corporateList = new LinkedList<>();
 
-        Source consumerSource = new Source(consumerQueue, eventList, "Consumer Source", 30, false, consumerSet);
-        Source corporateSource = new Source(corporateQueue, eventList, "Corporate Source", 30, true, corporateSet);
+        Source consumerSource = new Source(consumerQueue, eventList, "Consumer Source", 30, false, consumerList);
+        Source corporateSource = new Source(corporateQueue, eventList, "Corporate Source", 30, true, corporateList);
 
         Sink consumerSink = new Sink("Consumer sink");
         Sink corporateSink = new Sink("Corporate sink");
