@@ -1,5 +1,8 @@
 package callcenter;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Agent in a factory
  *
@@ -47,6 +50,9 @@ public class Agent implements CProcess, CustomerAcceptor {
 
     private ShiftType shiftType;
 
+    private final static int k = 5;
+    private final static List<Agent> availableAgents = new LinkedList<>();
+
     /**
      * Constructor
      * Service times are exponentially distributed with mean 30
@@ -74,6 +80,8 @@ public class Agent implements CProcess, CustomerAcceptor {
 
         corporate = c;
         shiftType = t;
+
+        availableAgents.add(this);
         queue.askCustomer(this);
     }
 
@@ -105,6 +113,9 @@ public class Agent implements CProcess, CustomerAcceptor {
         customer = null;
         // set agent status to idle
         busy = false;
+
+        availableAgents.add(this);
+
         // Ask the queue for customers
         queue.askCustomer(this);
     }
@@ -127,7 +138,9 @@ public class Agent implements CProcess, CustomerAcceptor {
     @Override
     public boolean giveCustomer(Customer c) {
         // Only accept something if the agent is idle
-        if (!busy && isCorporate() == c.isCorporate() && timeInShift(eventlist.getTime())) {
+        if (!busy && (isCorporate() == c.isCorporate() && timeInShift(eventlist.getTime())) {
+            availableAgents.remove(this);
+
             // accept the customer
             customer = c;
             // mark starting time
@@ -136,6 +149,9 @@ public class Agent implements CProcess, CustomerAcceptor {
             startProduction();
             // Flag that the customer has arrived
             return true;
+        }
+        if else (!c.isCorporate() && isCorporate() && k_used < k_max) {
+
         }
         // Flag that the customer has been rejected
         else return false;
