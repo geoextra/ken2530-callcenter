@@ -71,4 +71,14 @@ public class Simulation {
         System.out.println("]");
         return waitingTimes;
     }
+
+
+    public static double[] performanceCheck(LinkedList<Customer> consumerList, LinkedList<Customer> corporateList){
+        double[] consumerWaitingTimes = waitingTimes(consumerList);
+        double[] corporateWaitingTimes = waitingTimes(corporateList);
+
+    }
+
+
+
 }
