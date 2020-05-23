@@ -2,7 +2,7 @@
  * Event class
  * Events that facilitate changes in the simulation
  *
- * @author Joel Karel
+ * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
  * @version %I%, %G%
  */
 package callcenter;

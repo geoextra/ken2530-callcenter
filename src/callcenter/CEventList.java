@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Events are created here and it is ensured that they are processed in the proper order
  * The simulation clock is located here.
  *
- * @author Joel Karel
+ * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
  * @version %I%, %G%
  */
 public class CEventList implements CProcess {

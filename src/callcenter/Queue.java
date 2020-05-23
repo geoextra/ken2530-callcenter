@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Queue that stores customers until they can be handled by a agent
  *
- * @author Joel Karel
+ * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
  * @version %I%, %G%
  */
 public class Queue implements CustomerAcceptor {

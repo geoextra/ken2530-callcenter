@@ -1,7 +1,7 @@
 /**
  * Example program for using eventlists
  *
- * @author Joel Karel
+ * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
  * @version %I%, %G%
  */
 

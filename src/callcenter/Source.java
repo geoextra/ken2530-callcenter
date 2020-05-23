@@ -10,7 +10,7 @@ import static callcenter.DateUtils.*;
  * This class implements CProcess so that it can execute events.
  * By continuously creating new events, the source keeps busy.
  *
- * @author Joel Karel
+ * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
  * @version %I%, %G%
  */
 public class Source implements CProcess {

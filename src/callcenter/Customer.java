@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Customer that is send trough the system
  *
- * @author Joel Karel
+ * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
  * @version %I%, %G%
  */
 class Customer {
