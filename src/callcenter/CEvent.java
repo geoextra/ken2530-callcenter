@@ -26,12 +26,12 @@ public class CEvent {
      *
      * @param dl  The object that will process the event
      * @param tp  The type of the event
-     * @param tme The time on which the event will be executed
+     * @param time The time on which the event will be executed
      */
-    public CEvent(CProcess dl, int tp, double tme) {
+    public CEvent(CProcess dl, int tp, double time) {
         target = dl;
         type = tp;
-        executionTime = tme;
+        executionTime = time;
     }
 
     /**

@@ -3,6 +3,8 @@ package callcenter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static callcenter.DateUtils.*;
+
 /**
  * Agent in a factory
  *
@@ -42,6 +44,7 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Processing time iterator
      */
     private final boolean corporate;
+    private final ShiftType shiftType;
     /**
      * Customer that is being handled
      */
@@ -50,7 +53,6 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Status of the agent
      */
     private boolean busy;
-    private final ShiftType shiftType;
 
     /**
      * Constructor
@@ -118,27 +120,49 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Method to have this object execute an event
      *
      * @param type The type of the event that has to be executed
-     * @param tme  The current time
+     * @param time  The current time
      */
-    public void execute(int type, double tme) {
-        // show arrival
-        System.out.println("Customer finished at time = " + tme);
-        // Remove customer from system
-        customer.stamp(tme, "Processing finished", name);
-        sink.giveCustomer(customer);
-        customer = null;
+    public void execute(int type, double time) {
+        if (type == 0) {
+            // show arrival
+            System.out.println("Customer finished at time = " + time);
+            // Remove customer from system
+            customer.stamp(time, "Processing finished", name);
+            sink.giveCustomer(customer);
+            customer = null;
+        }
 
         becomeIdle();
     }
 
     private boolean timeInShift(double time) {
-        double time_h = time / 60 / 60;
-        double hour_of_the_day = time_h % 24;
-        System.out.println(hour_of_the_day);
-        return (((shiftType == ShiftType.MORNING) && (6 <= hour_of_the_day) && (hour_of_the_day < 14)) ||
-                ((shiftType == ShiftType.AFTERNOON) && (14 <= hour_of_the_day) && (hour_of_the_day < 22)) ||
-                ((shiftType == ShiftType.NIGHT) && (22 <= hour_of_the_day || hour_of_the_day < 6)) ||
+        double hourOfDay = hourOfDay(time);
+        return (((shiftType == ShiftType.MORNING) && (6 <= hourOfDay) && (hourOfDay < 14)) ||
+                ((shiftType == ShiftType.AFTERNOON) && (14 <= hourOfDay) && (hourOfDay < 22)) ||
+                ((shiftType == ShiftType.NIGHT) && (22 <= hourOfDay || hourOfDay < 6)) ||
                 (shiftType == ShiftType.SLAVE));
+    }
+
+    private double nextShiftStart(double time) {
+        double hourOfDay = hourOfDay(time);
+        int startingHour = 0;
+        switch (shiftType){
+            case MORNING:
+                startingHour = 6;
+                break;
+            case AFTERNOON:
+                startingHour = 14;
+                break;
+            case NIGHT:
+                startingHour = 22;
+                break;
+        }
+
+        if(hourOfDay > startingHour) {
+            return startOfNextDayInSeconds(time) + hoursToSeconds(startingHour);
+        } else {
+            return startOfDayInSeconds(time) + hoursToSeconds(startingHour);
+        }
     }
 
     /**
@@ -149,18 +173,24 @@ public class Agent implements CProcess, CustomerAcceptor {
      */
     @Override
     public boolean giveCustomer(Customer c) {
+        double time = eventlist.getTime();
+        boolean inShift = timeInShift(time);
         // Only accept something if the agent is idle
-        if (!busy && timeInShift(eventlist.getTime())) {
+        if (!busy && inShift) {
             if (isCorporate()) availableCorporateAgents.remove(this);
 
             // accept the customer
             customer = c;
             // mark starting time
-            customer.stamp(eventlist.getTime(), "Processing started", name);
+            customer.stamp(time, "Processing started", name);
             // start production
             startProduction();
             // Flag that the customer has arrived
             return true;
+        } else if (!inShift) {
+            // create activation call event and queue it
+            eventlist.add(this,1, nextShiftStart(time));
+            return false;
         }
         // Flag that the customer has been rejected
         else return false;

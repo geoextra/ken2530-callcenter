@@ -1,6 +1,9 @@
 package callcenter;
 
+import java.util.Date;
 import java.util.List;
+
+import static callcenter.DateUtils.*;
 
 /**
  * A source of customers
@@ -73,16 +76,15 @@ public class Source implements CProcess {
     }
 
     public double lambdaConsumer(double time) {
-        double time_h = time / 60 / 60;
+        double time_h = secondsToHours(time);
         double rate_m = Math.sin((2 * Math.PI) / 24.0 * (time_h - 9)) * 1.8 + 2;
         return rate_m / 60;
     }
 
     public double lambdaCorporate(double time) {
-        double time_h = time / 60 / 60;
-        double hour_of_the_day = time_h % 24;
+        double hourOfDay = hourOfDay(time);
         double rate_m;
-        if (8 <= hour_of_the_day && hour_of_the_day <= 18) {
+        if (8 <= hourOfDay && hourOfDay <= 18) {
             rate_m = 1.0;
         } else {
             rate_m = 0.2;
@@ -91,20 +93,20 @@ public class Source implements CProcess {
     }
 
     @Override
-    public void execute(int type, double tme) {
+    public void execute(int type, double time) {
         // show arrival
-        System.out.println("Arrival at time = " + tme);
+        System.out.println("Arrival at time = " + time);
         // give arrived customer to queue
         Customer p = new Customer(generateCoporateCostumers);
         customerList.add(p);
-        p.stamp(tme, "Creation", name);
+        p.stamp(time, "Creation", name);
         queue.giveCustomer(p);
         // generate duration
         // double duration = drawRandomExponential(meanArrTime);
-        //previousArrivalTime = tme;
+        //previousArrivalTime = time;
         double duration = drawRandomArrivalTime();
         // previousArrivalTime = duration;
         // Create a new event in the eventlist
-        list.add(this, 0, tme + duration - tme); //target,type,time
+        list.add(this, 0, time + duration - time); //target,type,time
     }
 }

@@ -10,6 +10,8 @@ package callcenter;
 import java.util.LinkedList;
 import java.util.Random;
 
+import static callcenter.DateUtils.*;
+
 public class Simulation {
     /**
      * @param args the command line arguments
@@ -32,24 +34,23 @@ public class Simulation {
         Sink corporateSink = new Sink("Corporate sink");
 
         // 3 shift * 2 agent types * max 20 agents * 10 parameter values
-        if(true) {
-            for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 5; i++) {
+            final boolean useSlaves = false;
+            if (!useSlaves) {
                 Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
-                Agent consumerAgent4 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
-                Agent consumerAgent2 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
+                Agent consumerAgent2 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
+                Agent consumerAgent3 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
 
                 Agent corporateAgent1 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.MORNING);
                 Agent corporateAgent2 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
                 Agent corporateAgent3 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.NIGHT);
-            }
-        } else {
-            for (int i = 0; i < 7; i++) {
+            } else {
                 Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.SLAVE);
-                Agent corporateAgent4 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.SLAVE);
+                Agent corporateAgent1 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.SLAVE);
             }
         }
         double daysToSimulate = 1;
-        double simulationTime = daysToSimulate * 24 * 60 * 60;
+        double simulationTime = daysToSeconds(daysToSimulate);
         eventList.start(simulationTime);
 
         // double[] waitingTimesConsumer = waitingTimes(consumerList);
@@ -89,11 +90,11 @@ public class Simulation {
         double[] consumerWaitingTimes = waitingTimes(consumerList);
         double[] corporateWaitingTimes = waitingTimes(corporateList);
 
-        double consumerThreshold1 = 5 * 60;
-        double consumerThreshold2 = 10 * 60;
+        double consumerThreshold1 = minutesToSeconds(5);
+        double consumerThreshold2 = minutesToSeconds(10);
 
-        double corporateThreshold1 = 3 * 60;
-        double corporateThreshold2 = 7 * 60;
+        double corporateThreshold1 = minutesToSeconds(3);
+        double corporateThreshold2 = minutesToSeconds(7);
 
         System.out.println("Consumer handled within 5 minutes : " + satisfiedCustomers(consumerWaitingTimes, consumerThreshold1));
         System.out.println("Consumer handled within 10 minutes : " + satisfiedCustomers(consumerWaitingTimes, consumerThreshold2));

@@ -39,13 +39,13 @@ public class CEventList implements CProcess {
      *
      * @param target The object that will process the event
      * @param type   A type indicator of the event for objects that can process multiple types of events.
-     * @param tme    The time at which the event will be executed
+     * @param time    The time at which the event will be executed
      */
-    public void add(CProcess target, int type, double tme) {
+    public void add(CProcess target, int type, double time) {
         boolean success = false;
         // First create a new event using the parameters
         CEvent evnt;
-        evnt = new CEvent(target, type, tme);
+        evnt = new CEvent(target, type, time);
         // Now it is examened where the event has to be inserted in the list
         for (int i = 0; i < events.size(); i++) {
             // The events are sorted chronologically
@@ -117,10 +117,10 @@ public class CEventList implements CProcess {
      * Method to have this object process an event
      *
      * @param type The type of the event that has to be executed
-     * @param tme  The current time
+     * @param time  The current time
      */
     @Override
-    public void execute(int type, double tme) {
+    public void execute(int type, double time) {
         if (type == -1)
             stop();
     }
