@@ -44,38 +44,22 @@ public class CEventList implements CProcess {
     public void add(CProcess target, int type, double time) {
         boolean success = false;
         // First create a new event using the parameters
-        CEvent evnt;
-        evnt = new CEvent(target, type, time);
-        // Now it is examened where the event has to be inserted in the list
+        CEvent event;
+        event = new CEvent(target, type, time);
+        // Now it is examined where the event has to be inserted in the list
         for (int i = 0; i < events.size(); i++) {
             // The events are sorted chronologically
-            if (events.get(i).getExecutionTime() > evnt.getExecutionTime()) {
+            if (events.get(i).getExecutionTime() > event.getExecutionTime()) {
                 // If an event is found in the list that has to be executed after the current event
                 success = true;
                 // Then the new event is inserted before that element
-                events.add(i, evnt);
+                events.add(i, event);
                 break;
             }
         }
         if (!success) {
             // Else the new event is appended to the list
-            events.add(evnt);
-        }
-    }
-
-    /**
-     * Method for starting the eventlist.
-     * It will run until there are no longer events in the list
-     */
-    public void start() {
-        // stop criterion
-        while ((events.size() > 0) && (!stopFlag)) {
-            // Make the similation time equal to the execution time of the first event in the list that has to be processed
-            currentTime = events.get(0).getExecutionTime();
-            // Let the element be processed
-            events.get(0).execute();
-            // Remove the event from the list
-            events.remove(0);
+            events.add(event);
         }
     }
 
@@ -89,7 +73,7 @@ public class CEventList implements CProcess {
         add(this, -1, mx);
         // stop criterion
         while ((events.size() > 0) && (!stopFlag)) {
-            // Make the similation time equal to the execution time of the first event in the list that has to be processed
+            // Make the simulation time equal to the execution time of the first event in the list that has to be processed
             currentTime = events.get(0).getExecutionTime();
             // Let the element be processed
             events.get(0).execute();

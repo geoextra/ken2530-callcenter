@@ -56,7 +56,7 @@ class Customer {
         times.trimToSize();
         double[] tmp = new double[times.size()];
         for (int i = 0; i < times.size(); i++) {
-            tmp[i] = (times.get(i)).doubleValue();
+            tmp[i] = times.get(i);
         }
         return tmp;
     }

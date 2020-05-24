@@ -64,7 +64,7 @@ public class Sink implements CustomerAcceptor {
         numbers.trimToSize();
         int[] tmp = new int[numbers.size()];
         for (int i = 0; i < numbers.size(); i++) {
-            tmp[i] = (numbers.get(i)).intValue();
+            tmp[i] = numbers.get(i);
         }
         return tmp;
     }
@@ -73,7 +73,7 @@ public class Sink implements CustomerAcceptor {
         times.trimToSize();
         double[] tmp = new double[times.size()];
         for (int i = 0; i < times.size(); i++) {
-            tmp[i] = (times.get(i)).doubleValue();
+            tmp[i] = times.get(i);
         }
         return tmp;
     }

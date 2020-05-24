@@ -28,22 +28,20 @@ public class Source implements CProcess {
 
     private final boolean generateCorporateCostumers;
     private final List<Customer> customerList;
-    public double lambdaConsumer_max = 3.8 / 60;
-    public double lambdaCorporate_max = 1.0 / 60;
+    public final double lambdaConsumer_max = 3.8 / 60;
+    public final double lambdaCorporate_max = 1.0 / 60;
     private double previousArrivalTime = 0;
 
     /**
      * Constructor, creates objects
-     * Interarrival times are exponentially distributed with specified mean
      *
      * @param q The receiver of the customers
      * @param l The eventlist that is requested to construct events
      * @param n Name of object
-     * @param m Mean arrival time
-     * @param c corporate
-     * @param s pointer to list of customers
+     * @param c Boolean weather the generated customers should be of the corporate or consumer type
+     * @param s Pointer to list of customers
      */
-    public Source(CustomerAcceptor q, CEventList l, String n, double m, boolean c, List<Customer> s) {
+    public Source(CustomerAcceptor q, CEventList l, String n, boolean c, List<Customer> s) {
         list = l;
         queue = q;
         name = n;

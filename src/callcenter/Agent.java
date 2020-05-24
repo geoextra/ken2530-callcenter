@@ -87,12 +87,12 @@ public class Agent implements CProcess, CustomerAcceptor {
         becomeIdle();
     }
 
-    public static double drawRandomTrancatedNormal(double mean, double variance, double min) {
+    public static double drawRandomTruncatedNormal(double mean, double variance, double min) {
         double number = Simulation.randomGenerator.nextGaussian() * Math.sqrt(variance) + mean;
         if (number >= min) {
             return number;
         } else {
-            return drawRandomTrancatedNormal(mean, variance, min);
+            return drawRandomTruncatedNormal(mean, variance, min);
         }
     }
 
@@ -198,15 +198,15 @@ public class Agent implements CProcess, CustomerAcceptor {
 
     /**
      * Starting routine for the production
-     * Start the handling of the current customer with an exponentionally distributed processingtime with average 30
+     * Start the handling of the current customer with an truncated normal distributed processing time
      * This time is placed in the eventlist
      */
     private void startProduction() {
         double duration;
         if (customer.isCorporate()) {
-            duration = drawRandomTrancatedNormal(corporateMeanProcTime, Math.pow(corporateDerivProcTime, 2), corporateMinProcTime);
+            duration = drawRandomTruncatedNormal(corporateMeanProcTime, Math.pow(corporateDerivProcTime, 2), corporateMinProcTime);
         } else {
-            duration = drawRandomTrancatedNormal(consumerMeanProcTime, Math.pow(consumerDerivProcTime, 2), consumerMinProcTime);
+            duration = drawRandomTruncatedNormal(consumerMeanProcTime, Math.pow(consumerDerivProcTime, 2), consumerMinProcTime);
         }
         // Create a new event in the eventlist
         double time = eventlist.getTime();

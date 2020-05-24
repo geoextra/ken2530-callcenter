@@ -1,5 +1,11 @@
 package callcenter;
 
+/**
+ * Utilities for working with times and dates
+ *
+ * @author Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
+ * @version %I%, %G%
+ */
 public class DateUtils {
     public static double minutesToSeconds(double time) {
         return time * 60;
@@ -27,10 +33,6 @@ public class DateUtils {
 
     public static double hourOfDay(double time) {
         return secondsToHours(time) % 24;
-    }
-
-    public static double secondsLeftOfDay(double time) {
-        return hoursToSeconds(24 - hourOfDay(time));
     }
 
     public static double startOfDayInSeconds(double time) {

@@ -1,10 +1,3 @@
-/**
- * Example program for using eventlists
- *
- * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
- * @version %I%, %G%
- */
-
 package callcenter;
 
 import java.util.LinkedList;
@@ -12,13 +5,19 @@ import java.util.Random;
 
 import static callcenter.DateUtils.*;
 
+/**
+ * Example program for using eventlists
+ *
+ * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
+ * @version %I%, %G%
+ */
 public class Simulation {
+    public static final Random randomGenerator = new Random(42);
+
+
     /**
      * @param args the command line arguments
      */
-
-    public static final Random randomGenerator = new Random(42);
-
     public static void main(String[] args) {
         CEventList eventList = new CEventList();
 
@@ -27,8 +26,8 @@ public class Simulation {
         LinkedList<Customer> consumerList = new LinkedList<>();
         LinkedList<Customer> corporateList = new LinkedList<>();
 
-        Source consumerSource = new Source(consumerQueue, eventList, "Consumer Source", 30, false, consumerList);
-        Source corporateSource = new Source(corporateQueue, eventList, "Corporate Source", 30, true, corporateList);
+        Source consumerSource = new Source(consumerQueue, eventList, "Consumer Source", false, consumerList);
+        Source corporateSource = new Source(corporateQueue, eventList, "Corporate Source", true, corporateList);
 
         Sink consumerSink = new Sink("Consumer sink");
         Sink corporateSink = new Sink("Corporate sink");
