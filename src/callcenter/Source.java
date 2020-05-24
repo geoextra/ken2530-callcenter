@@ -1,6 +1,5 @@
 package callcenter;
 
-import java.util.Date;
 import java.util.List;
 
 import static callcenter.DateUtils.*;
@@ -27,7 +26,7 @@ public class Source implements CProcess {
      */
     private final String name;
 
-    private final boolean generateCoporateCostumers;
+    private final boolean generateCorporateCostumers;
     private final List<Customer> customerList;
     public double lambdaConsumer_max = 3.8 / 60;
     public double lambdaCorporate_max = 1.0 / 60;
@@ -48,7 +47,7 @@ public class Source implements CProcess {
         list = l;
         queue = q;
         name = n;
-        generateCoporateCostumers = c;
+        generateCorporateCostumers = c;
         // put first event in list for initialization
         list.add(this, 0, drawRandomArrivalTime()); //target,type,time
         customerList = s;
@@ -58,14 +57,14 @@ public class Source implements CProcess {
     public double drawRandomArrivalTime() {
         double nextArrivalTime = previousArrivalTime;
 
-        double lambda_max = generateCoporateCostumers ? lambdaCorporate_max : lambdaConsumer_max;
+        double lambda_max = generateCorporateCostumers ? lambdaCorporate_max : lambdaConsumer_max;
 
         double u1 = Simulation.randomGenerator.nextDouble();
         double u2 = Simulation.randomGenerator.nextDouble();
 
         nextArrivalTime = nextArrivalTime - ((1 / lambda_max) * Math.log(u1));
 
-        double numerator = generateCoporateCostumers ? lambdaCorporate(nextArrivalTime) : lambdaConsumer(nextArrivalTime);
+        double numerator = generateCorporateCostumers ? lambdaCorporate(nextArrivalTime) : lambdaConsumer(nextArrivalTime);
 
         if (u2 <= numerator / lambda_max) {
             previousArrivalTime = nextArrivalTime;
@@ -97,7 +96,7 @@ public class Source implements CProcess {
         // show arrival
         System.out.println("Arrival at time = " + time);
         // give arrived customer to queue
-        Customer p = new Customer(generateCoporateCostumers);
+        Customer p = new Customer(generateCorporateCostumers);
         customerList.add(p);
         p.stamp(time, "Creation", name);
         queue.giveCustomer(p);
