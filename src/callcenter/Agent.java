@@ -12,7 +12,7 @@ import static callcenter.DateUtils.*;
  * @version %I%, %G%
  */
 public class Agent implements CProcess, CustomerAcceptor {
-    private final static int k = 100;
+    private final static int k = 3;
     private final static Set<Agent> availableCorporateAgents = new LinkedHashSet<>();
     /**
      * Eventlist that will manage events
@@ -123,7 +123,7 @@ public class Agent implements CProcess, CustomerAcceptor {
      * @param time  The current time
      */
     public void execute(int type, double time) {
-        if (type == 0) {
+        if (type == 0 && customer != null) {
             // show arrival
             System.out.println("Customer finished at time = " + time);
             // Remove customer from system
