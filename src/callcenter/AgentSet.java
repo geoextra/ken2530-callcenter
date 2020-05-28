@@ -10,14 +10,27 @@ import java.util.Set;
  * @version %I%, %G%
  */
 public class AgentSet {
-    private final static Set<Agent> agentSet = new LinkedHashSet<>();
-    private static int k = 0;
+    private final Set<Agent> agentSet = new LinkedHashSet<>();
 
-    public static void add(Agent agent) {
+    private int k;
+
+    public AgentSet(int k) {
+        this.k = k;
+    }
+
+    public int getK() {
+        return k;
+    }
+
+    public void setK(int k) {
+        this.k = k;
+    }
+
+    public void add(Agent agent) {
         agentSet.add(agent);
     }
 
-    public static int availableShiftCorporateAgentsCount(ShiftType shiftType) {
+    public int availableShiftCorporateAgentsCount(ShiftType shiftType) {
         int n = 0;
         for (Agent agent : agentSet) {
             if (agent.getShiftType() == shiftType && agent.isCorporate() && !agent.isBusy()) n++;
@@ -26,7 +39,11 @@ public class AgentSet {
         return n;
     }
 
-    public static boolean enoughIdleShiftCorporateAgents(ShiftType shiftType) {
+    public boolean enoughIdleShiftCorporateAgents(ShiftType shiftType) {
         return availableShiftCorporateAgentsCount(shiftType) > k;
+    }
+
+    public void reset() {
+        agentSet.clear();
     }
 }

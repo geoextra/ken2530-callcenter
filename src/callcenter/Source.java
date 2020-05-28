@@ -62,9 +62,9 @@ public class Source implements CProcess {
 
         nextArrivalTime = nextArrivalTime - ((1 / lambda_max) * Math.log(u1));
 
-        double numerator = generateCorporateCostumers ? lambdaCorporate(nextArrivalTime) : lambdaConsumer(nextArrivalTime);
+        double lambda_value = generateCorporateCostumers ? lambdaCorporate(nextArrivalTime) : lambdaConsumer(nextArrivalTime);
 
-        if (u2 <= numerator / lambda_max) {
+        if (u2 <= lambda_value / lambda_max) {
             previousArrivalTime = nextArrivalTime;
             return nextArrivalTime;
         } else {
@@ -92,7 +92,7 @@ public class Source implements CProcess {
     @Override
     public void execute(EventType type, double time) {
         // show arrival
-        System.out.println("Arrival at time = " + time);
+        if (Simulation.print) if (Simulation.print) System.out.println("Arrival at time = " + time);
         // give arrived customer to queue
         Customer p = new Customer(generateCorporateCostumers);
         customerList.add(p);

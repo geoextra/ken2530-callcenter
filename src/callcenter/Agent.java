@@ -18,16 +18,24 @@ public class Agent implements CProcess, CustomerAcceptor {
      */
     private final String name;
     /**
-     * Queue from which the agent has to take customers
+     * Queues from which the agent has to take customers
      */
     private final Queue consumerQueue;
     private final Queue corporateQueue;
+
     /**
      * Sink to dump customers
      */
     private final CustomerAcceptor sink;
+
+
     /**
-     * Mean processing time
+     * The set where the agent belong to
+     */
+    private final AgentSet agentSet;
+
+    /**
+     * Processing time
      */
     private final double consumerMeanProcTime = 72;
     private final double consumerDerivProcTime = 35;
@@ -42,24 +50,14 @@ public class Agent implements CProcess, CustomerAcceptor {
     private final boolean corporate;
 
     private final ShiftType shiftType;
-
-    public ShiftType getShiftType() {
-        return shiftType;
-    }
     /**
      * Customer that is being handled
      */
     private Customer customer;
-
     /**
      * Status of the agent
      */
     private boolean busy;
-
-    public boolean isBusy() {
-        return busy;
-    }
-
     /**
      * Indicator if next shift is already queued
      */
@@ -69,6 +67,7 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Constructor
      * Service times are exponentially distributed with mean 30
      *
+     * @param a     Set of agents where this agent belongs to
      * @param conQ  Queue from which the agent has to take consumers
      * @param corpQ Queue from which the agent has to take corporates
      * @param s     Where to send the completed customers
@@ -77,7 +76,7 @@ public class Agent implements CProcess, CustomerAcceptor {
      * @param c     Indicator if agent is corporate
      * @param t     shift the agent is belonging to
      */
-    public Agent(Queue conQ, Queue corpQ, CustomerAcceptor s, CEventList e, String n, boolean c, ShiftType t) {
+    public Agent(AgentSet a, Queue conQ, Queue corpQ, CustomerAcceptor s, CEventList e, String n, boolean c, ShiftType t) {
         busy = false;
         consumerQueue = conQ;
         corporateQueue = corpQ;
@@ -88,7 +87,8 @@ public class Agent implements CProcess, CustomerAcceptor {
         corporate = c;
         shiftType = t;
 
-        AgentSet.add(this);
+        a.add(this);
+        agentSet = a;
 
         becomeIdle();
     }
@@ -102,6 +102,14 @@ public class Agent implements CProcess, CustomerAcceptor {
         }
     }
 
+    public ShiftType getShiftType() {
+        return shiftType;
+    }
+
+    public boolean isBusy() {
+        return busy;
+    }
+
     private void becomeIdle() {
         // set agent status to idle
         busy = false;
@@ -109,7 +117,7 @@ public class Agent implements CProcess, CustomerAcceptor {
         if (isCorporate()) {
             // Ask the queue for corporate customers
             corporateQueue.askCustomer(this);
-            if (!busy && AgentSet.enoughIdleShiftCorporateAgents(shiftType)) consumerQueue.askCustomer(this);
+            if (!busy && agentSet.enoughIdleShiftCorporateAgents(shiftType)) consumerQueue.askCustomer(this);
         } else {
             // Ask the queue for consumer customers
             consumerQueue.askCustomer(this);
@@ -127,13 +135,12 @@ public class Agent implements CProcess, CustomerAcceptor {
      * @param time The current time
      */
     public void execute(EventType type, double time) {
-        if(type == EventType.SHIFT_START) {
+        if (type == EventType.SHIFT_START) {
             shiftQueued = false;
-        }
-        else if (type == EventType.CUSTOMER_FINISHED) {
+        } else if (type == EventType.CUSTOMER_FINISHED) {
             assert customer != null;
             // show arrival
-            System.out.println("Customer finished at time = " + time);
+            if (Simulation.print) System.out.println("Customer finished at time = " + time);
             // Remove customer from system
             customer.stamp(time, "Processing finished", name);
             sink.giveCustomer(customer);
@@ -167,10 +174,10 @@ public class Agent implements CProcess, CustomerAcceptor {
         }
 
         if (hourOfDay > startingHour) {
-            System.out.println(startOfNextDayInSeconds(time) + hoursToSeconds(startingHour));
+            if (Simulation.print) System.out.println(startOfNextDayInSeconds(time) + hoursToSeconds(startingHour));
             return startOfNextDayInSeconds(time) + hoursToSeconds(startingHour);
         } else {
-            System.out.println(startOfDayInSeconds(time) + hoursToSeconds(startingHour));
+            if (Simulation.print) System.out.println(startOfDayInSeconds(time) + hoursToSeconds(startingHour));
             return startOfDayInSeconds(time) + hoursToSeconds(startingHour);
         }
     }
