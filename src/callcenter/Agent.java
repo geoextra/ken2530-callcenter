@@ -1,8 +1,5 @@
 package callcenter;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import static callcenter.DateUtils.*;
 
 /**
@@ -12,9 +9,6 @@ import static callcenter.DateUtils.*;
  * @version %I%, %G%
  */
 public class Agent implements CProcess, CustomerAcceptor {
-    private final static Set<Agent> availableCorporateAgents = new LinkedHashSet<>();
-    private static int k = 3;
-
     /**
      * Eventlist that will manage events
      */
@@ -46,7 +40,12 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Processing time iterator
      */
     private final boolean corporate;
+
     private final ShiftType shiftType;
+
+    public ShiftType getShiftType() {
+        return shiftType;
+    }
     /**
      * Customer that is being handled
      */
@@ -101,11 +100,11 @@ public class Agent implements CProcess, CustomerAcceptor {
         busy = false;
 
         if (isCorporate()) {
-            availableCorporateAgents.add(this);
+            AvailableCorporateAgentSet.add(this);
 
             // Ask the queue for corporate customers
             corporateQueue.askCustomer(this);
-            if (!busy && availableCorporateAgents.size() > k) consumerQueue.askCustomer(this);
+            if (!busy && AvailableCorporateAgentSet.enoughIdleShiftAgents(shiftType)) consumerQueue.askCustomer(this);
         } else {
             // Ask the queue for consumer customers
             consumerQueue.askCustomer(this);
@@ -193,7 +192,7 @@ public class Agent implements CProcess, CustomerAcceptor {
             // Flag that the customer has arrived
             return true;
         } else if (!inShift && !shiftQueued) {
-            if (isCorporate()) availableCorporateAgents.remove(this);
+            if (isCorporate()) AvailableCorporateAgentSet.remove(this);
 
             // create activation call event and queue it
             eventlist.add(this, EventType.SHIFT_START, nextShiftStart(time));
