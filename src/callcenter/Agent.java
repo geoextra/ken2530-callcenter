@@ -172,8 +172,6 @@ public class Agent implements CProcess, CustomerAcceptor {
         boolean inShift = timeInShift(time);
         // Only accept something if the agent is idle
         if (!busy && inShift) {
-            if (isCorporate()) availableCorporateAgents.remove(this);
-
             // accept the customer
             customer = c;
             // mark starting time
@@ -183,8 +181,11 @@ public class Agent implements CProcess, CustomerAcceptor {
             // Flag that the customer has arrived
             return true;
         } else if (!inShift) {
+            if (isCorporate()) availableCorporateAgents.remove(this);
+
             // create activation call event and queue it
             eventlist.add(this, EventType.SHIFT_START, nextShiftStart(time));
+
             return false;
         }
         // Flag that the customer has been rejected

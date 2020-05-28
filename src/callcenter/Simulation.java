@@ -34,8 +34,8 @@ public class Simulation {
         Sink corporateSink = new Sink("Corporate sink");
 
         // 3 shift * 2 agent types * max 20 agents * 10 parameter values
-        for (int i = 0; i < 5; i++) {
-            final boolean useSlaves = false;
+        for (int i = 0; i < 4; i++) {
+            final boolean useSlaves = true;
             if (!useSlaves) {
                 Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
                 Agent consumerAgent2 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
