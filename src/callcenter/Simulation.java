@@ -51,6 +51,7 @@ public class Simulation {
         }
         double daysToSimulate = 1;
         double simulationTime = daysToSeconds(daysToSimulate);
+        assert simulationTime == 86400;
         eventList.start(simulationTime);
 
         // double[] waitingTimesConsumer = waitingTimes(consumerList);

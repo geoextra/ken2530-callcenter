@@ -57,6 +57,11 @@ public class Agent implements CProcess, CustomerAcceptor {
     private boolean busy;
 
     /**
+     * Indicator if next shift is already queued
+     */
+    private boolean shiftQueued = false;
+
+    /**
      * Constructor
      * Service times are exponentially distributed with mean 30
      *
@@ -118,7 +123,11 @@ public class Agent implements CProcess, CustomerAcceptor {
      * @param time The current time
      */
     public void execute(EventType type, double time) {
-        if (type == EventType.CUSTOMER_FINISHED && customer != null) {
+        if(type == EventType.SHIFT_START) {
+            shiftQueued = false;
+        }
+        else if (type == EventType.CUSTOMER_FINISHED) {
+            assert customer != null;
             // show arrival
             System.out.println("Customer finished at time = " + time);
             // Remove customer from system
@@ -154,8 +163,10 @@ public class Agent implements CProcess, CustomerAcceptor {
         }
 
         if (hourOfDay > startingHour) {
+            System.out.println(startOfNextDayInSeconds(time) + hoursToSeconds(startingHour));
             return startOfNextDayInSeconds(time) + hoursToSeconds(startingHour);
         } else {
+            System.out.println(startOfDayInSeconds(time) + hoursToSeconds(startingHour));
             return startOfDayInSeconds(time) + hoursToSeconds(startingHour);
         }
     }
@@ -168,6 +179,7 @@ public class Agent implements CProcess, CustomerAcceptor {
      */
     @Override
     public boolean giveCustomer(Customer c) {
+        assert c != null;
         double time = eventlist.getTime();
         boolean inShift = timeInShift(time);
         // Only accept something if the agent is idle
@@ -180,11 +192,12 @@ public class Agent implements CProcess, CustomerAcceptor {
             startProduction();
             // Flag that the customer has arrived
             return true;
-        } else if (!inShift) {
+        } else if (!inShift && !shiftQueued) {
             if (isCorporate()) availableCorporateAgents.remove(this);
 
             // create activation call event and queue it
             eventlist.add(this, EventType.SHIFT_START, nextShiftStart(time));
+            shiftQueued = true;
 
             return false;
         }
@@ -198,6 +211,7 @@ public class Agent implements CProcess, CustomerAcceptor {
      * This time is placed in the eventlist
      */
     private void startProduction() {
+        assert customer != null;
         double duration;
         if (customer.isCorporate()) {
             duration = drawRandomTruncatedNormal(corporateMeanProcTime, Math.pow(corporateDerivProcTime, 2), corporateMinProcTime);
