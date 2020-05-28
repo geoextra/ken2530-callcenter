@@ -117,8 +117,8 @@ public class Agent implements CProcess, CustomerAcceptor {
      * @param type The type of the event that has to be executed
      * @param time The current time
      */
-    public void execute(int type, double time) {
-        if (type == 0 && customer != null) {
+    public void execute(EventType type, double time) {
+        if (type == EventType.CUSTOMER_FINISHED && customer != null) {
             // show arrival
             System.out.println("Customer finished at time = " + time);
             // Remove customer from system
@@ -184,7 +184,7 @@ public class Agent implements CProcess, CustomerAcceptor {
             return true;
         } else if (!inShift) {
             // create activation call event and queue it
-            eventlist.add(this, 1, nextShiftStart(time));
+            eventlist.add(this, EventType.SHIFT_START, nextShiftStart(time));
             return false;
         }
         // Flag that the customer has been rejected
@@ -205,7 +205,7 @@ public class Agent implements CProcess, CustomerAcceptor {
         }
         // Create a new event in the eventlist
         double time = eventlist.getTime();
-        eventlist.add(this, 0, time + duration); //target,type,time
+        eventlist.add(this, EventType.CUSTOMER_FINISHED, time + duration); //target,type,time
         // set status to busy
         busy = true;
     }

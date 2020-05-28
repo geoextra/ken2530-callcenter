@@ -14,5 +14,5 @@ public interface CProcess {
      * @param type The type of the event that has to be executed
      * @param time The current time
      */
-    void execute(int type, double time);
+    void execute(EventType type, double time);
 }

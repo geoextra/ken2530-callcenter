@@ -41,7 +41,7 @@ public class CEventList implements CProcess {
      * @param type   A type indicator of the event for objects that can process multiple types of events.
      * @param time   The time at which the event will be executed
      */
-    public void add(CProcess target, int type, double time) {
+    public void add(CProcess target, EventType type, double time) {
         boolean success = false;
         // First create a new event using the parameters
         CEvent event;
@@ -70,7 +70,7 @@ public class CEventList implements CProcess {
      * @param mx De maximum time of the simulation
      */
     public void start(double mx) {
-        add(this, -1, mx);
+        add(this, EventType.SIMULATION_END, mx);
         // stop criterion
         while ((events.size() > 0) && (!stopFlag)) {
             // Make the simulation time equal to the execution time of the first event in the list that has to be processed
@@ -104,8 +104,7 @@ public class CEventList implements CProcess {
      * @param time The current time
      */
     @Override
-    public void execute(int type, double time) {
-        if (type == -1)
-            stop();
+    public void execute(EventType type, double time) {
+        if (type == EventType.SIMULATION_END) stop();
     }
 }

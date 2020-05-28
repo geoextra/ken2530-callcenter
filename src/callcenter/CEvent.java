@@ -15,7 +15,7 @@ public class CEvent {
     /**
      * The type of the event
      */
-    private final int type;
+    private final EventType type;
     /**
      * The time on which the event will be executed
      */
@@ -28,7 +28,7 @@ public class CEvent {
      * @param tp   The type of the event
      * @param time The time on which the event will be executed
      */
-    public CEvent(CProcess dl, int tp, double time) {
+    public CEvent(CProcess dl, EventType tp, double time) {
         target = dl;
         type = tp;
         executionTime = time;

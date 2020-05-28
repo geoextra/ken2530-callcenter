@@ -47,7 +47,7 @@ public class Source implements CProcess {
         name = n;
         generateCorporateCostumers = c;
         // put first event in list for initialization
-        list.add(this, 0, drawRandomArrivalTime()); //target,type,time
+        list.add(this, EventType.CUSTOMER_ARRIVAL, drawRandomArrivalTime()); //target,type,time
         customerList = s;
     }
 
@@ -90,7 +90,7 @@ public class Source implements CProcess {
     }
 
     @Override
-    public void execute(int type, double time) {
+    public void execute(EventType type, double time) {
         // show arrival
         System.out.println("Arrival at time = " + time);
         // give arrived customer to queue
@@ -98,12 +98,9 @@ public class Source implements CProcess {
         customerList.add(p);
         p.stamp(time, "Creation", name);
         queue.giveCustomer(p);
-        // generate duration
-        // double duration = drawRandomExponential(meanArrTime);
-        //previousArrivalTime = time;
-        double duration = drawRandomArrivalTime();
-        // previousArrivalTime = duration;
+        // generate nextArrivalTime
+        double nextArrivalTime = drawRandomArrivalTime();
         // Create a new event in the eventlist
-        list.add(this, 0, time + duration - time); //target,type,time
+        list.add(this, EventType.CUSTOMER_ARRIVAL, nextArrivalTime); //target,type,time
     }
 }
