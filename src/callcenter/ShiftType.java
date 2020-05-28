@@ -7,5 +7,5 @@ package callcenter;
  * @version %I%, %G%
  */
 public enum ShiftType {
-    MORNING, AFTERNOON, NIGHT, SLAVE
+    MORNING, AFTERNOON, NIGHT, DKE_STAFF_MEMBER
 }

@@ -3,7 +3,8 @@ package callcenter;
 import java.util.LinkedList;
 import java.util.Random;
 
-import static callcenter.DateUtils.*;
+import static callcenter.DateUtils.daysToSeconds;
+import static callcenter.DateUtils.minutesToSeconds;
 
 /**
  * Example program for using eventlists
@@ -44,8 +45,8 @@ public class Simulation {
                 Agent corporateAgent2 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
                 Agent corporateAgent3 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.NIGHT);
             } else {
-                Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.SLAVE);
-                Agent corporateAgent1 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.SLAVE);
+                Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.DKE_STAFF_MEMBER);
+                Agent corporateAgent1 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.DKE_STAFF_MEMBER);
             }
         }
         double daysToSimulate = 1;

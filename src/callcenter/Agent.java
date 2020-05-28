@@ -12,8 +12,9 @@ import static callcenter.DateUtils.*;
  * @version %I%, %G%
  */
 public class Agent implements CProcess, CustomerAcceptor {
-    private final static int k = 3;
     private final static Set<Agent> availableCorporateAgents = new LinkedHashSet<>();
+    private static int k = 3;
+
     /**
      * Eventlist that will manage events
      */
@@ -34,12 +35,13 @@ public class Agent implements CProcess, CustomerAcceptor {
     /**
      * Mean processing time
      */
-    private final double consumerMeanProcTime;
-    private final double consumerDerivProcTime;
-    private final double consumerMinProcTime;
-    private final double corporateMeanProcTime;
-    private final double corporateDerivProcTime;
-    private final double corporateMinProcTime;
+    private final double consumerMeanProcTime = 72;
+    private final double consumerDerivProcTime = 35;
+    private final double consumerMinProcTime = 25;
+    private final double corporateMeanProcTime = 216;
+    private final double corporateDerivProcTime = 72;
+    private final double corporateMinProcTime = 42;
+
     /**
      * Processing time iterator
      */
@@ -73,13 +75,6 @@ public class Agent implements CProcess, CustomerAcceptor {
         sink = s;
         eventlist = e;
         name = n;
-        consumerMeanProcTime = 72;
-        consumerDerivProcTime = 35;
-        consumerMinProcTime = 25;
-
-        corporateMeanProcTime = 216;
-        corporateDerivProcTime = 72;
-        corporateMinProcTime = 45;
 
         corporate = c;
         shiftType = t;
@@ -120,7 +115,7 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Method to have this object execute an event
      *
      * @param type The type of the event that has to be executed
-     * @param time  The current time
+     * @param time The current time
      */
     public void execute(int type, double time) {
         if (type == 0 && customer != null) {
@@ -140,13 +135,13 @@ public class Agent implements CProcess, CustomerAcceptor {
         return (((shiftType == ShiftType.MORNING) && (6 <= hourOfDay) && (hourOfDay < 14)) ||
                 ((shiftType == ShiftType.AFTERNOON) && (14 <= hourOfDay) && (hourOfDay < 22)) ||
                 ((shiftType == ShiftType.NIGHT) && (22 <= hourOfDay || hourOfDay < 6)) ||
-                (shiftType == ShiftType.SLAVE));
+                (shiftType == ShiftType.DKE_STAFF_MEMBER));
     }
 
     private double nextShiftStart(double time) {
         double hourOfDay = hourOfDay(time);
         int startingHour = 0;
-        switch (shiftType){
+        switch (shiftType) {
             case MORNING:
                 startingHour = 6;
                 break;
@@ -158,7 +153,7 @@ public class Agent implements CProcess, CustomerAcceptor {
                 break;
         }
 
-        if(hourOfDay > startingHour) {
+        if (hourOfDay > startingHour) {
             return startOfNextDayInSeconds(time) + hoursToSeconds(startingHour);
         } else {
             return startOfDayInSeconds(time) + hoursToSeconds(startingHour);
@@ -189,7 +184,7 @@ public class Agent implements CProcess, CustomerAcceptor {
             return true;
         } else if (!inShift) {
             // create activation call event and queue it
-            eventlist.add(this,1, nextShiftStart(time));
+            eventlist.add(this, 1, nextShiftStart(time));
             return false;
         }
         // Flag that the customer has been rejected
@@ -220,6 +215,6 @@ public class Agent implements CProcess, CustomerAcceptor {
     }
 
     public int getDailyCost() {
-        return shiftType == ShiftType.SLAVE ? getHourlyCost() * 24 : getHourlyCost() * 8;
+        return shiftType == ShiftType.DKE_STAFF_MEMBER ? getHourlyCost() * 24 : getHourlyCost() * 8;
     }
 }

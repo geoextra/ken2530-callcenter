@@ -2,7 +2,8 @@ package callcenter;
 
 import java.util.List;
 
-import static callcenter.DateUtils.*;
+import static callcenter.DateUtils.hourOfDay;
+import static callcenter.DateUtils.secondsToHours;
 
 /**
  * A source of customers
@@ -13,6 +14,8 @@ import static callcenter.DateUtils.*;
  * @version %I%, %G%
  */
 public class Source implements CProcess {
+    public final double lambdaConsumer_max = 3.8 / 60;
+    public final double lambdaCorporate_max = 1.0 / 60;
     /**
      * Eventlist that will be requested to construct events
      */
@@ -25,11 +28,8 @@ public class Source implements CProcess {
      * Name of the source
      */
     private final String name;
-
     private final boolean generateCorporateCostumers;
     private final List<Customer> customerList;
-    public final double lambdaConsumer_max = 3.8 / 60;
-    public final double lambdaCorporate_max = 1.0 / 60;
     private double previousArrivalTime = 0;
 
     /**

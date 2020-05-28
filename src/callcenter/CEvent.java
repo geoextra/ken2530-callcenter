@@ -24,8 +24,8 @@ public class CEvent {
     /**
      * Constructor for objects
      *
-     * @param dl  The object that will process the event
-     * @param tp  The type of the event
+     * @param dl   The object that will process the event
+     * @param tp   The type of the event
      * @param time The time on which the event will be executed
      */
     public CEvent(CProcess dl, int tp, double time) {
