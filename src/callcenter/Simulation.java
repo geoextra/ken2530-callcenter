@@ -14,12 +14,32 @@ import static callcenter.DateUtils.minutesToSeconds;
  */
 public class Simulation {
     public static final Random randomGenerator = new Random(42);
-
+    public static final Boolean print = false;
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        int runs = 100;
+        double[] results = new double[runs];
+        double[] results2 = new double[runs];
+        double[] results3 = new double[runs];
+        double[] results4 = new double[runs];
+
+        for (int i = 0; i < runs; i++) {
+            double[] conf = runSimulation();
+            results[i] = conf[0];
+            results2[i] = conf[1];
+            results3[i] = conf[2];
+            results4[i] = conf[3];
+        }
+        for (int i = 0; i < runs; i++) {
+            System.out.println(String.format("Run %d : [", i) + results[i] + ", " + results2[i] + ", " + results3[i] + ", " + results4[i] + "];");
+        }
+    }
+
+
+    public static double[] runSimulation() {
         CEventList eventList = new CEventList();
 
         Queue consumerQueue = new Queue();
@@ -32,21 +52,22 @@ public class Simulation {
 
         Sink consumerSink = new Sink("Consumer sink");
         Sink corporateSink = new Sink("Corporate sink");
+        AgentSet agentSet = new AgentSet(4);
 
         // 3 shift * 2 agent types * max 20 agents * 10 parameter values
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             final boolean useSlaves = false;
             if (!useSlaves) {
-                Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
-                Agent consumerAgent2 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
-                Agent consumerAgent3 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
+                Agent consumerAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
+                Agent consumerAgent2 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
+                Agent consumerAgent3 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
 
-                Agent corporateAgent1 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.MORNING);
-                Agent corporateAgent2 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
-                Agent corporateAgent3 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.NIGHT);
+                Agent corporateAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.MORNING);
+                Agent corporateAgent2 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
+                Agent corporateAgent3 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.NIGHT);
             } else {
-                Agent consumerAgent1 = new Agent(consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.DKE_STAFF_MEMBER);
-                Agent corporateAgent1 = new Agent(consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.DKE_STAFF_MEMBER);
+                Agent consumerAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.DKE_STAFF_MEMBER);
+                Agent corporateAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.DKE_STAFF_MEMBER);
             }
         }
         double daysToSimulate = 1;
@@ -57,13 +78,12 @@ public class Simulation {
         // double[] waitingTimesConsumer = waitingTimes(consumerList);
         // double[] waitingTimesCorporate = waitingTimes(corporateList);
 
-        performanceCheck(consumerList, corporateList);
+        return performanceCheck(consumerList, corporateList);
     }
 
     public static double[] waitingTimes(LinkedList<Customer> customerList) {
         double[] waitingTimes = new double[customerList.size()];
-
-        System.out.print("[");
+        if (print) System.out.print("[");
         for (int i = 0; i < customerList.size(); i++) {
             Customer consumer = customerList.get(i);
 
@@ -79,15 +99,14 @@ public class Simulation {
             }
 
             waitingTimes[i] = waitingTime;
-
-            System.out.print(waitingTime + ", ");
+            if (print) System.out.print(waitingTime + ", ");
         }
-        System.out.println("]");
+        if (print) System.out.println("]");
         return waitingTimes;
     }
 
 
-    public static void performanceCheck(LinkedList<Customer> consumerList, LinkedList<Customer> corporateList) {
+    public static double[] performanceCheck(LinkedList<Customer> consumerList, LinkedList<Customer> corporateList) {
         double[] consumerWaitingTimes = waitingTimes(consumerList);
         double[] corporateWaitingTimes = waitingTimes(corporateList);
 
@@ -97,11 +116,20 @@ public class Simulation {
         double corporateThreshold1 = minutesToSeconds(3);
         double corporateThreshold2 = minutesToSeconds(7);
 
-        System.out.println("Consumer handled within 5 minutes : " + satisfiedCustomers(consumerWaitingTimes, consumerThreshold1));
-        System.out.println("Consumer handled within 10 minutes : " + satisfiedCustomers(consumerWaitingTimes, consumerThreshold2));
-        System.out.println("Corporates handled within 3 minutes : " + satisfiedCustomers(corporateWaitingTimes, corporateThreshold1));
-        System.out.println("Corporates handled within 7 minutes : " + satisfiedCustomers(corporateWaitingTimes, corporateThreshold2));
+        double r1 = satisfiedCustomers(consumerWaitingTimes, consumerThreshold1);
+        double r2 = satisfiedCustomers(consumerWaitingTimes, consumerThreshold2);
+        double r3 = satisfiedCustomers(corporateWaitingTimes, corporateThreshold1);
+        double r4 = satisfiedCustomers(corporateWaitingTimes, corporateThreshold2);
+
+        if (print) {
+            System.out.println("Consumer handled within 5 minutes : " + r1);
+            System.out.println("Consumer handled within 10 minutes : " + r2);
+            System.out.println("Corporates handled within 3 minutes : " + r3);
+            System.out.println("Corporates handled within 7 minutes : " + r4);
+        }
+        return new double[]{r1, r2, r3, r4};
     }
+
 
     public static double satisfiedCustomers(double[] waitingTimesArray, double waitingTimeThreshold) {
         int customersBelowThreshold = 0;
