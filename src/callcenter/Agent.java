@@ -50,10 +50,15 @@ public class Agent implements CProcess, CustomerAcceptor {
      * Customer that is being handled
      */
     private Customer customer;
+
     /**
      * Status of the agent
      */
     private boolean busy;
+
+    public boolean isBusy() {
+        return busy;
+    }
 
     /**
      * Indicator if next shift is already queued
@@ -83,6 +88,8 @@ public class Agent implements CProcess, CustomerAcceptor {
         corporate = c;
         shiftType = t;
 
+        AgentSet.add(this);
+
         becomeIdle();
     }
 
@@ -100,11 +107,9 @@ public class Agent implements CProcess, CustomerAcceptor {
         busy = false;
 
         if (isCorporate()) {
-            AvailableCorporateAgentSet.add(this);
-
             // Ask the queue for corporate customers
             corporateQueue.askCustomer(this);
-            if (!busy && AvailableCorporateAgentSet.enoughIdleShiftAgents(shiftType)) consumerQueue.askCustomer(this);
+            if (!busy && AgentSet.enoughIdleShiftCorporateAgents(shiftType)) consumerQueue.askCustomer(this);
         } else {
             // Ask the queue for consumer customers
             consumerQueue.askCustomer(this);
@@ -192,8 +197,6 @@ public class Agent implements CProcess, CustomerAcceptor {
             // Flag that the customer has arrived
             return true;
         } else if (!inShift && !shiftQueued) {
-            if (isCorporate()) AvailableCorporateAgentSet.remove(this);
-
             // create activation call event and queue it
             eventlist.add(this, EventType.SHIFT_START, nextShiftStart(time));
             shiftQueued = true;

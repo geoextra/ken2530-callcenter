@@ -9,28 +9,24 @@ import java.util.Set;
  * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
  * @version %I%, %G%
  */
-public class AvailableCorporateAgentSet {
+public class AgentSet {
     private final static Set<Agent> agentSet = new LinkedHashSet<>();
-    private static int k = 2;
+    private static int k = 0;
 
     public static void add(Agent agent) {
         agentSet.add(agent);
     }
 
-    public static void remove(Agent agent) {
-        agentSet.remove(agent);
-    }
-
-    public static int availableShiftAgentsCount(ShiftType shift) {
+    public static int availableShiftCorporateAgentsCount(ShiftType shiftType) {
         int n = 0;
         for (Agent agent : agentSet) {
-            if (agent.getShiftType() == shift) n++;
+            if (agent.getShiftType() == shiftType && agent.isCorporate() && !agent.isBusy()) n++;
         }
 
         return n;
     }
 
-    public static boolean enoughIdleShiftAgents(ShiftType shift) {
-        return availableShiftAgentsCount(shift) > k;
+    public static boolean enoughIdleShiftCorporateAgents(ShiftType shiftType) {
+        return availableShiftCorporateAgentsCount(shiftType) > k;
     }
 }
