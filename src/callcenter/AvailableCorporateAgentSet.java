@@ -3,6 +3,12 @@ package callcenter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Set wrapper for available corporate agents
+ *
+ * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
+ * @version %I%, %G%
+ */
 public class AvailableCorporateAgentSet {
     private final static Set<Agent> agentSet = new LinkedHashSet<>();
     private static int k = 2;
