@@ -21,21 +21,28 @@ public class Simulation {
      */
     public static void main(String[] args) {
         int runs = 100;
-        double[] results = new double[runs];
+        double[] results1 = new double[runs];
         double[] results2 = new double[runs];
         double[] results3 = new double[runs];
         double[] results4 = new double[runs];
+        double[] waitingTimesAverageConsumer = new double[runs];
+        double[] waitingTimesAverageCorporate = new double[runs];
 
         for (int i = 0; i < runs; i++) {
             double[] conf = runSimulation();
-            results[i] = conf[0];
+            results1[i] = conf[0];
             results2[i] = conf[1];
             results3[i] = conf[2];
             results4[i] = conf[3];
+            waitingTimesAverageConsumer[i] = conf[4];
+            waitingTimesAverageCorporate[i] = conf[5];
         }
-        for (int i = 0; i < runs; i++) {
-            System.out.println(String.format("Run %d : [", i) + results[i] + ", " + results2[i] + ", " + results3[i] + ", " + results4[i] + "];");
-        }
+        printMatlabArray("results1", results1);
+        printMatlabArray("results2", results2);
+        printMatlabArray("results3", results3);
+        printMatlabArray("results4", results4);
+        printMatlabArray("waitingTimesAverageConsumer", waitingTimesAverageConsumer);
+        printMatlabArray("waitingTimesAverageCorporate", waitingTimesAverageCorporate);
     }
 
 
@@ -56,19 +63,13 @@ public class Simulation {
 
         // 3 shift * 2 agent types * max 20 agents * 10 parameter values
         for (int i = 0; i < 5; i++) {
-            final boolean useSlaves = false;
-            if (!useSlaves) {
-                Agent consumerAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
-                Agent consumerAgent2 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
-                Agent consumerAgent3 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
+            Agent consumerAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.MORNING);
+            Agent consumerAgent2 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 2", false, ShiftType.AFTERNOON);
+            Agent consumerAgent3 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 3", false, ShiftType.NIGHT);
 
-                Agent corporateAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.MORNING);
-                Agent corporateAgent2 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
-                Agent corporateAgent3 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.NIGHT);
-            } else {
-                Agent consumerAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, consumerSink, eventList, "Consumer Agent 1", false, ShiftType.DKE_STAFF_MEMBER);
-                Agent corporateAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.DKE_STAFF_MEMBER);
-            }
+            Agent corporateAgent1 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 1", true, ShiftType.MORNING);
+            Agent corporateAgent2 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 2", true, ShiftType.AFTERNOON);
+            Agent corporateAgent3 = new Agent(agentSet, consumerQueue, corporateQueue, corporateSink, eventList, "Corporate Agent 3", true, ShiftType.NIGHT);
         }
         double daysToSimulate = 1;
         double simulationTime = daysToSeconds(daysToSimulate);
@@ -105,6 +106,13 @@ public class Simulation {
         return waitingTimes;
     }
 
+    public static double waitingTimesAverage(LinkedList<Customer> customerList) {
+        double[] waitingTimes = waitingTimes(customerList);
+        double sum = 0;
+        for (double waitingTime : waitingTimes) sum += waitingTime;
+        return sum / waitingTimes.length;
+    }
+
 
     public static double[] performanceCheck(LinkedList<Customer> consumerList, LinkedList<Customer> corporateList) {
         double[] consumerWaitingTimes = waitingTimes(consumerList);
@@ -127,7 +135,7 @@ public class Simulation {
             System.out.println("Corporates handled within 3 minutes : " + r3);
             System.out.println("Corporates handled within 7 minutes : " + r4);
         }
-        return new double[]{r1, r2, r3, r4};
+        return new double[]{r1, r2, r3, r4, waitingTimesAverage(consumerList), waitingTimesAverage(corporateList)};
     }
 
 
@@ -138,5 +146,12 @@ public class Simulation {
         }
 
         return (double) customersBelowThreshold / (double) waitingTimesArray.length;
+    }
+
+    public static void printMatlabArray(String variableName, double[] array) {
+        System.out.print(variableName + " = [");
+        for (Object item : array) System.out.print(item + ", ");
+        System.out.print("];");
+        System.out.println();
     }
 }
