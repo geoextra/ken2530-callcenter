@@ -14,7 +14,7 @@ import static callcenter.DateUtils.minutesToSeconds;
  */
 public class Simulation {
     public static final Random randomGenerator = new Random(42);
-    public static final Boolean print = false;
+    public static final boolean print = false;
 
     /**
      * @param args the command line arguments
