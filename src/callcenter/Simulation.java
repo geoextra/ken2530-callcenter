@@ -59,7 +59,7 @@ public class Simulation {
 
         Sink consumerSink = new Sink("Consumer sink");
         Sink corporateSink = new Sink("Corporate sink");
-        AgentSet agentSet = new AgentSet(4);
+        AgentSet agentSet = new AgentSet(2);
 
         // 3 shift * 2 agent types * max 20 agents * 10 parameter values
         for (int i = 0; i < 5; i++) {
