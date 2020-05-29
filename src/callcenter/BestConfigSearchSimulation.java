@@ -1,25 +1,23 @@
 package callcenter;
 
 import java.util.LinkedList;
-import java.util.Random;
 
 import static callcenter.DateUtils.daysToSeconds;
 import static callcenter.DateUtils.minutesToSeconds;
 
 /**
- * Example program for using eventlists
+ * Hyper-parameter optimisation
  *
  * @author Joel Karel, Simone Schouten, Nick Bast, Frederick van der Windt and Moritz Gehlhaar
  * @version %I%, %G%
  */
 public class BestConfigSearchSimulation {
-    public static final Random randomGenerator = new Random(42);
-    public static final boolean print = false;
-
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        Simulation.print = false;
+
         int lowest_cost = Integer.MAX_VALUE;
 
         int agents_consumer_morning_max = 8;
